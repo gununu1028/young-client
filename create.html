@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>ウェブデザイン技能競技大会</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="text/javascript" src="js/create.js" async></script>
+</head>
+
+<body>
+
+  <div id="wrap">
+
+    <header>
+      <div id="logo">
+        <img src="img/logo.png" alt="ウェブデザイン技能競技大会">
+      </div>
+
+      <nav class="cf">
+        <ul>
+          <li><a href="#">HOME</a></li>
+          <li><a href="#">競技概要</a></li>
+          <li><a href="#">参加申込</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="events.html">イベント</a></li>
+          <li><a href="#">サイトマップ</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <h1>イベント情報を新規登録する</h1>
+      <form id="create_event">
+        <p>
+          タイトル：<input type="text" name="title">
+        </p>
+        <p>
+          開始日時：<input type="text" name="started_at">
+        </p>
+        <p>
+          終了日時：<input type="text" name="ended_at">
+        </p>
+        <p>
+          説明：<input type="text" name="description">
+        </p>
+        <p>
+          <button type="button" name="button">登録</button>
+        </p>
+      </form>
+      <p id="result"></p>
+    </main>
+  </div>
+
+  <footer>
+    <div class="container cf">
+      <ul>
+        <li><a href="#">HOME</a></li>
+        <li><a href="#">競技概要</a></li>
+        <li><a href="#">参加申込</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="events.html">イベント</a></li>
+        <li><a href="#">サイトマップ</a></li>
+      </ul>
+
+      <div id="copyrights">
+        <small>&copy; 1997 - 2019 NSPC. All Rights Reserved.</small>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>

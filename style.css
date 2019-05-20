@@ -1,0 +1,180 @@
+@charset "UTF-8";
+
+html {
+  min-height: 100%;
+  position: relative;
+}
+
+body {
+  background-color: #f5f5f5;
+  color: #333333;
+  font-family: "メイリオ", 'MS PGothic', Osaka, sans-serif;
+  font-size: 16px;
+  margin: 0 0 150px 0;
+  min-height: 100%;
+  padding: 0;
+}
+
+header, footer, main, aside {
+  display: block;
+}
+
+a {
+  color: #333333;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #d3d3d3;
+}
+
+#wrap {
+  background-color: #ffffff;
+  border: solid 1px #000;
+  line-height: 200%;
+  margin: 20px auto 50px;
+  min-height: 100%;
+  padding-bottom: 40px;
+  width: 918px;
+}
+
+header {
+  background-color: #ffffff;
+  padding: 20px 0 0;
+}
+
+#logo {
+  margin: 0 20px 20px;
+}
+
+nav {
+  background-color: #006400;
+  font-size: 0.7em;
+  margin: 0;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav li {
+  border-right: solid 1px #ffffff;
+  float: left;
+  font-weight: bold;
+  width: 152px;
+}
+
+nav a {
+  color: #ffffff;
+  display: block;
+  padding: 10px 0;
+  text-align: center;
+}
+
+nav a:hover {
+  background-color: #556b2f;
+}
+
+nav li:last-of-type {
+  border-right: 0;
+  width: 153px
+}
+
+#main_visual {
+  background: url(img/main_image.jpg) no-repeat center center;
+  display: table;
+  height: 200px;
+  margin-bottom: 40px;
+  overflow: hidden;
+  text-align: center;
+}
+
+#main_visual strong {
+  color: #ffffff;
+  display: table-cell;
+  font-size: 1.8em;
+  text-shadow: 0 0 7px #000000;
+  vertical-align: middle;
+  width: 920px;
+}
+
+main {
+  margin: 0 30px 0 20px;
+  min-height: 300px;
+  padding: 20px;
+}
+
+h1 {
+  border-top: solid 1px #333333;
+  border-bottom: solid 1px #333333;
+  font-size: 1.2em;
+  margin-top: 0;
+  margin-bottom: 40px;
+  padding: 5px 0;
+}
+
+h2 {
+  border-left: solid 8px #333333;
+  font-size: 1em;
+  margin-top: 0;
+  padding: 3px 0 3px 10px;
+}
+
+p {
+  text-align: justify;
+  text-indent: 1em;
+}
+
+footer {
+  background-color: #006400;
+  bottom: 0;
+  clear: both;
+  color: #ffffff;
+  font-size: 0.9em;
+  height: 20px;
+  min-width: 920px;
+  padding: 40px 0;
+  position: absolute;
+  width: 100%;
+}
+
+footer a {
+  color: #d3d3d3;
+}
+
+footer a:hover {
+  color: #ffffff;
+}
+
+footer ul {
+  float: right;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+footer li {
+  display: inline-block;
+  margin-right: 16px;
+}
+
+footer li:last-of-type {
+  margin-right: 0;
+}
+
+#copyrights {
+  float: left;
+}
+
+.container {
+  margin: auto;
+  width: 920px;
+}
+
+.cf:after {
+  content: "";
+  display: block;
+  clear: both;
+}

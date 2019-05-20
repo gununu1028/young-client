@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>JS test</title>
+  </head>
+  <body>
+    <p>console を開いて確認してください. <br/>最後にPOSTをテストするため, 再読み込みを行い 「all 取得」でデータが追加されていることをを確認してください. </p>
+    <script type="text/javascript">
+     async function getEventAll() {
+
+         const res = await fetch("http://192.168.33.10/api/events");
+         const data = await res.json();
+         console.log("all 取得");              
+         console.log(data);
+
+     }
+     async function getEvent() {
+
+         const res = await fetch("http://192.168.33.10/api/events/1");
+         const data = await res.json();
+         console.log("id=1 取得");              
+         console.log(data);
+     }
+     
+     async function postEvent() {
+
+         const headers = new Headers();
+         headers.append("Content-Type", "application/json");
+         headers.append("Accept", "application/json");  
+         headers.append("Authorization", "Bearer cf4bd65638b811e8840a1f128ca65a99");  
+
+         const res = await fetch("http://192.168.33.10/api/events",
+                                 {
+                                     method: "POST",
+                                     headers: headers,
+                                     body: '{ "title" : " テストだぜ",  "started_at" :  "2019-07-07 12:00:00",  "ended_at" :  "2019-07-07 15:00:00",  "description":  " 説明 "}'
+                                 });
+         const data = await res.json();
+         console.log("POST でデータ追加");                  
+         console.log(data);
+     }
+
+     getEventAll() 
+     getEvent() 
+     postEvent() ;
+
+    </script>
+  </body>
+</html>
+
