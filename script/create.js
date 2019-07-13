@@ -14,7 +14,7 @@ async function postEvent() {
   headers.append('Accept', 'application/json');
   headers.append('Authorization', 'Bearer cf4bd65638b811e8840a1f128ca65a99');
   // APIを呼び出す
-  var res = await fetch('http://192.168.33.10/api/events', {
+  var res = await fetch('https://young2019.herokuapp.com/api/events', {
     method: 'POST',
     headers: headers,
     body: JSON.stringify(body)

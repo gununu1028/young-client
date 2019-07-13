@@ -1,7 +1,7 @@
 // 新着情報の全体データを取得
 async function getEventAll() {
   // APIを呼び出す
-  var res = await fetch('http://192.168.33.10/api/events');
+  var res = await fetch('https://young2019.herokuapp.com/api/events');
   // 呼び出したAPIからデータを取得
   var data = await res.json();
   // 取得したデータを開始日時の新しい順に並び替え
@@ -26,7 +26,7 @@ async function getEventAll() {
 
 // 新着情報の個別データを取得
 async function getEvent(id) {
-  var res = await fetch('http://192.168.33.10/api/events/' + id);
+  var res = await fetch('https://young2019.herokuapp.com/api/events/' + id);
   var data = await res.json();
   // 取得した情報を指定したエリアに表示
   document.querySelector('#event_detail h3').innerHTML = data.title;

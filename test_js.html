@@ -9,7 +9,7 @@
     <script type="text/javascript">
      async function getEventAll() {
 
-         const res = await fetch("http://192.168.33.10/api/events");
+         const res = await fetch("https://young2019.herokuapp.com/api/events");
          const data = await res.json();
          console.log("all 取得");              
          console.log(data);
@@ -17,7 +17,7 @@
      }
      async function getEvent() {
 
-         const res = await fetch("http://192.168.33.10/api/events/1");
+         const res = await fetch("https://young2019.herokuapp.com/api/events/1");
          const data = await res.json();
          console.log("id=1 取得");              
          console.log(data);
@@ -30,7 +30,7 @@
          headers.append("Accept", "application/json");  
          headers.append("Authorization", "Bearer cf4bd65638b811e8840a1f128ca65a99");  
 
-         const res = await fetch("http://192.168.33.10/api/events",
+         const res = await fetch("https://young2019.herokuapp.com/api/events",
                                  {
                                      method: "POST",
                                      headers: headers,
