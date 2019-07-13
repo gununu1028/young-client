@@ -83,7 +83,7 @@ nav li:last-of-type {
 }
 
 #main_visual {
-  background: url(img/main_image.jpg) no-repeat center center;
+  background: url(image/main_image.jpg) no-repeat center center;
   display: table;
   height: 200px;
   margin-bottom: 40px;

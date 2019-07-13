@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <title>ウェブデザイン技能競技大会</title>
-  <link rel="stylesheet" href="style.css">
-  <script type="text/javascript" src="js/create.js" async></script>
+  <link rel="stylesheet" href="style/style.css">
+  <script type="text/javascript" src="script/create.js" async></script>
 </head>
 
 <body>
@@ -14,7 +14,7 @@
 
     <header>
       <div id="logo">
-        <img src="img/logo.png" alt="ウェブデザイン技能競技大会">
+        <image src="image/logo.png" alt="ウェブデザイン技能競技大会">
       </div>
 
       <nav class="cf">
@@ -36,13 +36,13 @@
           タイトル：<input type="text" name="title">
         </p>
         <p>
-          開始日時：<input type="text" name="started_at">
+          開始日時：<input type="datetime-local" name="started_at">
         </p>
         <p>
-          終了日時：<input type="text" name="ended_at">
+          終了日時：<input type="datetime-local" name="ended_at">
         </p>
         <p>
-          説明：<input type="text" name="description">
+          説明：<textarea name="description"></textarea>
         </p>
         <p>
           <button type="button" name="button">登録</button>
