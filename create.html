@@ -33,19 +33,23 @@
       <h1>イベント情報を新規登録する</h1>
       <form id="create_event">
         <p>
-          タイトル：<input type="text" name="title">
+          <label>タイトル</label>
+          <input type="text" name="title">
         </p>
         <p>
-          開始日時：<input type="datetime-local" name="started_at">
+          <label>開始日時</label>
+          <input type="datetime-local" name="started_at">
         </p>
         <p>
-          終了日時：<input type="datetime-local" name="ended_at">
+          <label>終了日時</label>
+          <input type="datetime-local" name="ended_at">
         </p>
         <p>
-          説明：<textarea name="description"></textarea>
+          <label>説明</label>
+          <textarea name="description"></textarea>
         </p>
         <p>
-          <button type="button" name="button">登録</button>
+          <button type="button" name="button">新規登録</button>
         </p>
       </form>
       <p id="result"></p>
