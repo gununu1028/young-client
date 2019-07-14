@@ -83,7 +83,7 @@ nav li:last-of-type {
 }
 
 #main_visual {
-  background: url(image/main_image.jpg) no-repeat center center;
+  background: url(../image/main_image.jpg) no-repeat center center;
   display: table;
   height: 200px;
   margin-bottom: 40px;
@@ -186,6 +186,23 @@ textarea {
 
 #copyrights {
   float: left;
+}
+
+#marker {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  background-color: orangered;
+  opacity: 0.8;
+}
+
+#place {
+  text-decoration: none;
+  color: white;
+  font-size: 11pt;
+  font-weight: bold;
+  text-shadow: 1px 2px 3px black;
 }
 
 .container {
