@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>ボードゲーム一覧</title>
+    <link rel="stylesheet" href="style/style.css" type="text/css">
 </head>
 
 <body>
@@ -27,13 +28,13 @@
                 board_game_list: null
             },
             created: function () {
-                fetch('https://young2021.herokuapp.com/api/board-game')
+                const url = 'https://young2021.herokuapp.com/api/board-game';
+                fetch(url)
                     .then(response => {
                         return response.json();
                     })
                     .then(json => {
                         this.board_game_list = json;
-                        console.log(this.board_game_list);
                     });
             }
         });

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ボードゲーム詳細</title>
+    <link rel="stylesheet" href="style/style.css" type="text/css">
+</head>
+
+<body>
+    <h1>ボードゲーム詳細</h1>
+    <div id="app">
+        <template v-if="board_game_list">
+            <ul>
+                <li v-for="board_game in board_game_list" class="board_game_item">
+                    <button v-on:click="clicked_board_game_item" v-bind:data-id="board_game.id">
+                        {{ board_game.title }}
+                    </button>
+                    （{{ board_game.price }}円）<br>
+                    <img v-bind:src="board_game.product_image">
+                </li>
+            </ul>
+        </template>
+        <template v-if="selected_board_game">
+            <div class="selected_board_game">
+                <h2>{{ selected_board_game.title }}</h2>
+                <p>
+                    {{ selected_board_game.price }}円<br>
+                </p>
+            </div>
+        </template>
+    </div>
+    <script src="script/vue.js"></script>
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data: {
+                board_game_list: null,
+                selected_board_game: null
+            },
+            created: function () {
+                const url = 'https://young2021.herokuapp.com/api/board-game';
+                fetch(url)
+                    .then(response => {
+                        return response.json();
+                    })
+                    .then(json => {
+                        this.board_game_list = json;
+                    });
+            },
+            methods: {
+                clicked_board_game_item: function (event) {
+                    const selected_board_game_id = event.target.dataset.id;
+                    const url = 'https://young2021.herokuapp.com/api/board-game/' + selected_board_game_id;
+                    fetch(url)
+                        .then(response => {
+                            return response.json();
+                        })
+                        .then(json => {
+                            this.selected_board_game = json;
+                        });
+                }
+            }
+        });
+    </script>
+</body>
