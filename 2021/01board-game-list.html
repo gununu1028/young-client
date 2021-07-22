@@ -14,8 +14,7 @@
             <ul>
                 <li v-for="board_game in board_game_list" class="board_game_item">
                     {{ board_game.title }}
-                    （{{ board_game.price }}円）<br>
-                    <img v-bind:src="board_game.product_image">
+                    （{{ board_game.price }}円）
                 </li>
             </ul>
         </template>

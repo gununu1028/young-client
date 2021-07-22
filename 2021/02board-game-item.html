@@ -17,14 +17,16 @@
                         {{ board_game.title }}
                     </button>
                     （{{ board_game.price }}円）<br>
-                    <img v-bind:src="board_game.product_image">
                 </li>
             </ul>
+            <p>この下にクリックしたものの詳細を表示します。</p>
         </template>
         <template v-if="selected_board_game">
             <div class="selected_board_game">
                 <h2>{{ selected_board_game.title }}</h2>
                 <p>
+                    <img v-bind:src="selected_board_game.product_image"><br>
+                    {{ selected_board_game.product_description }}<br>
                     {{ selected_board_game.price }}円<br>
                 </p>
             </div>
