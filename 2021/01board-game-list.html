@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ボードゲーム一覧</title>
+</head>
+
+<body>
+    <h1>ボードゲーム一覧</h1>
+    <div id="app">
+        <template v-if="board_game_list">
+            <ul>
+                <li v-for="board_game in board_game_list" class="board_game_item">
+                    {{ board_game.title }}
+                    （{{ board_game.price }}円）<br>
+                    <img v-bind:src="board_game.product_image">
+                </li>
+            </ul>
+        </template>
+    </div>
+    <script src="script/vue.js"></script>
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data: {
+                board_game_list: null
+            },
+            created: function () {
+                fetch('https://young2021.herokuapp.com/api/board-game')
+                    .then(response => {
+                        return response.json();
+                    })
+                    .then(json => {
+                        this.board_game_list = json;
+                        console.log(this.board_game_list);
+                    });
+            }
+        });
+    </script>
+</body>
