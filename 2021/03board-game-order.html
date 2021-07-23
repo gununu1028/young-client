@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ボードゲーム詳細</title>
+    <link rel="stylesheet" href="style/style.css" type="text/css">
+</head>
+
+<body>
+    <h1>ボードゲーム詳細</h1>
+    <div id="app">
+        <template v-if="board_game_list">
+            <ul>
+                <li v-for="board_game in board_game_list" class="board_game_item">
+                    <button v-on:click="clicked_board_game_item" v-bind:data-id="board_game.id">
+                        {{ board_game.title }}
+                    </button>
+                    （{{ board_game.price }}円）<br>
+                </li>
+            </ul>
+            <p>この下にクリックしたものの詳細を表示します。</p>
+        </template>
+        <template v-if="selected_board_game">
+            <div class="selected_board_game">
+                <h2>{{ selected_board_game.title }}</h2>
+                <p>
+                    <img v-bind:src="selected_board_game.product_image"><br>
+                    {{ selected_board_game.product_description }}<br>
+                    {{ selected_board_game.price }}円<br>
+                </p>
+                <button v-on:click="clicked_board_game_order = true" v-bind:data-id="board_game.id">
+                    購入に進む
+                </button>
+            </div>
+        </template>
+        <template v-if="clicked_board_game_order">
+            購入手続き
+            <h2>{{ selected_board_game.title }}</h2>
+            <form>
+                <p>
+                    数量：<input type="number" v-model="quantity">
+                </p>
+                <h3>購入者情報の入力</h3>
+                <p>
+                    氏名：<input type="text" v-model="name">
+                </p>
+                <p>
+                    電話番号：<input type="number" v-model="number">
+                </p>
+                <p>
+                    郵便番号：<input type="number" v-model="zip_code">
+                </p>
+                <p>
+                    住所：<input type="text" v-model="address">
+                </p>
+            </form>
+        </template>
+    </div>
+    <script src="script/vue.js"></script>
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data: {
+                board_game_list: null,
+                selected_board_game: null,
+                clicked_board_game_order: false,
+                quantity: null,
+                name: null,
+                number: null,
+                zip_code: null,
+                address: null
+            },
+            created: function () {
+                const url = 'https://young2021.herokuapp.com/api/board-game';
+                fetch(url)
+                    .then(response => {
+                        return response.json();
+                    })
+                    .then(json => {
+                        this.board_game_list = json;
+                    });
+            },
+            methods: {
+                clicked_board_game_item: function (event) {
+                    const selected_board_game_id = event.target.dataset.id;
+                    const url = 'https://young2021.herokuapp.com/api/board-game/' + selected_board_game_id;
+                    fetch(url)
+                        .then(response => {
+                            return response.json();
+                        })
+                        .then(json => {
+                            this.selected_board_game = json;
+                        });
+                },
+                clicked_board_game_order: function (event) {
+                    const data = {
+                        items: [],
+                        name: this.name,
+                        number: this.number,
+                        zip_code: this.zip_code,
+                        address: this.address
+                    };
+                    const url = 'https://young2021.herokuapp.com/api/order';
+                    fetch(url, {
+                        method: 'POST',
+                        body: JSON.stringify(data),
+                    })
+                        .then(response => {
+                            return response.json();
+                        });
+                }
+            }
+        });
+    </script>
+</body>

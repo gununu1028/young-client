@@ -10,9 +10,12 @@
 <body>
     <h1>ボードゲーム一覧</h1>
     <div id="app">
+        <!-- v-ifと書くことで、board_game_listに代入されたらtempleteタグの中を表示する -->
         <template v-if="board_game_list">
             <ul>
+                <!-- v-forは繰り返し、board_game_listの中身を一つずつ取り出す -->
                 <li v-for="board_game in board_game_list" class="board_game_item">
+                    <!-- 中括弧{{ }} ははじまりとおわりは2個ずつ -->
                     {{ board_game.title }}
                     （{{ board_game.price }}円）
                 </li>
@@ -27,12 +30,16 @@
                 board_game_list: null
             },
             created: function () {
+                // ボードゲーム一覧APIのURL
                 const url = 'https://young2021.herokuapp.com/api/board-game';
+                // APIに繋げる
                 fetch(url)
                     .then(response => {
+                        // レスポンス（返ってきたデータ）を把握
                         return response.json();
                     })
                     .then(json => {
+                        // 返ってきたJSONを代入
                         this.board_game_list = json;
                     });
             }
