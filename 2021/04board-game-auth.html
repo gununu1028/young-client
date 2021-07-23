@@ -35,7 +35,22 @@
             </div>
         </template>
         <template v-if="clicked_board_game_order">
-            購入手続き
+            この先はログインが必要です。
+            <form>
+                <p>
+                    ユーザー名：<input type="text" v-model="login">
+                </p>
+                <p>
+                    パスワード：<input type="password" v-model="password">
+                </p>
+            </form>
+            <button type="button" v-on:click="clicked_login">
+                ログイン
+            </button>
+            <br>
+        </template>
+        <template v-if="logined">
+            ログインしました！
             <h2>{{ selected_board_game.title }}</h2>
             <form>
                 <p>
@@ -70,15 +85,18 @@
         const app = new Vue({
             el: '#app',
             data: {
+                logined: false,
                 board_game_list: null,
                 selected_board_game: null,
                 clicked_board_game_order: false,
                 board_game_order_success: false,
+                login: null,
+                password: null,
                 quantity: null,
                 name: null,
                 number: null,
                 zip_code: null,
-                address: null,
+                address: null
             },
             created: function () {
                 const url = 'https://young2021.herokuapp.com/api/board-game';
@@ -104,12 +122,7 @@
                 },
                 clicked_board_game_order_sent: function (event) {
                     const data = {
-                        items: [
-                            {
-                                id: this.selected_board_game.id,
-                                quantity: this.quantity,
-                            }
-                        ],
+                        items: [],
                         name: this.name,
                         number: this.number,
                         zip_code: this.zip_code,
@@ -118,16 +131,30 @@
                     const url = 'https://young2021.herokuapp.com/api/order';
                     fetch(url, {
                         method: 'POST',
+                        body: JSON.stringify(data),
+                    })
+                        .then(response => {
+                            return response.json();
+                        });
+                },
+                clicked_login: function (event) {
+                    const data = {
+                        login: this.login,
+                        password: this.password
+                    };
+                    const url = 'https://young2021.herokuapp.com/api/auth';
+                    fetch(url, {
+                        method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify(data),
                     })
                         .then(response => {
+                            if (response.status == 200) {
+                                this.logined = true;
+                            }
                             return response.json();
-                        })
-                        .then(json => {
-                            this.board_game_order_success = true;
                         });
                 }
             }
