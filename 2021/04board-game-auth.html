@@ -122,7 +122,12 @@
                 },
                 clicked_board_game_order_sent: function (event) {
                     const data = {
-                        items: [],
+                        items: [
+                            {
+                                id: this.selected_board_game.id,
+                                quantity: this.quantity,
+                            }
+                        ],
                         name: this.name,
                         number: this.number,
                         zip_code: this.zip_code,
@@ -131,10 +136,16 @@
                     const url = 'https://young2021.herokuapp.com/api/order';
                     fetch(url, {
                         method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
                         body: JSON.stringify(data),
                     })
                         .then(response => {
                             return response.json();
+                        })
+                        .then(json => {
+                            this.board_game_order_success = true;
                         });
                 },
                 clicked_login: function (event) {
