@@ -29,6 +29,7 @@
                     {{ selected_board_game.product_description }}<br>
                     {{ selected_board_game.price }}円<br>
                 </p>
+                <!-- trueにすることで該当のtemplateが表示される -->
                 <button v-on:click="clicked_board_game_order = true">
                     購入に進む
                 </button>
@@ -39,6 +40,7 @@
             <h2>{{ selected_board_game.title }}</h2>
             <form>
                 <p>
+                    <!-- v-modelは、入力値がJavaScriptに連動する -->
                     数量：<input type="number" v-model="quantity">
                 </p>
                 <h3>購入者情報の入力</h3>
@@ -117,16 +119,20 @@
                     };
                     const url = 'https://young2021.herokuapp.com/api/order';
                     fetch(url, {
+                        // APIドキュメントにPOSTと書いてあったらPOSTにする
                         method: 'POST',
+                        // 送るデータがJSON形式であることをAPIサーバに伝える
                         headers: {
                             'Content-Type': 'application/json',
                         },
+                        // APIに通信するため、文字列に変換
                         body: JSON.stringify(data),
                     })
                         .then(response => {
                             return response.json();
                         })
                         .then(json => {
+                            // 購入が完了したメッセージを出すためにtrueにする
                             this.board_game_order_success = true;
                         });
                 }
