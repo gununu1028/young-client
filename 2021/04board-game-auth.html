@@ -99,7 +99,7 @@
                 address: null
             },
             created: function () {
-                const url = 'https://young2021.herokuapp.com/api/board-game';
+                const url = 'https://young2022.herokuapp.com/api/board-game';
                 fetch(url)
                     .then(response => {
                         return response.json();
@@ -111,7 +111,7 @@
             methods: {
                 clicked_board_game_item: function (event) {
                     const selected_board_game_id = event.target.dataset.id;
-                    const url = 'https://young2021.herokuapp.com/api/board-game/' + selected_board_game_id;
+                    const url = 'https://young2022.herokuapp.com/api/board-game/' + selected_board_game_id;
                     fetch(url)
                         .then(response => {
                             return response.json();
@@ -133,7 +133,7 @@
                         zip_code: this.zip_code,
                         address: this.address
                     };
-                    const url = 'https://young2021.herokuapp.com/api/order';
+                    const url = 'https://young2022.herokuapp.com/api/order';
                     fetch(url, {
                         method: 'POST',
                         headers: {
@@ -153,7 +153,7 @@
                         login: this.login,
                         password: this.password
                     };
-                    const url = 'https://young2021.herokuapp.com/api/auth';
+                    const url = 'https://young2022.herokuapp.com/api/auth';
                     fetch(url, {
                         method: 'POST',
                         headers: {
