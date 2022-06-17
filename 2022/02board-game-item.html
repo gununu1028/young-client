@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ボードゲーム詳細</title>
+    <link rel="stylesheet" href="style/style.css" type="text/css">
+</head>
+
+<body>
+    <h1>ボードゲーム詳細</h1>
+    <div id="app">
+        <template v-if="data.board_game_list">
+            <ul>
+                <li v-for="board_game in data.board_game_list" class="board_game_item">
+                    <button v-on:click="clicked_board_game_item" v-bind:data-id="board_game.id">
+                        {{ board_game.title }}
+                    </button>
+                    （{{ board_game.price }}円）<br>
+                </li>
+            </ul>
+            <p>この下にクリックしたものの詳細を表示します。</p>
+        </template>
+        <template v-if="data.selected_board_game">
+            <div class="selected_board_game">
+                <h2>{{ data.selected_board_game.title }}</h2>
+                <p>
+                    <img v-bind:src="data.selected_board_game.product_image"><br>
+                    {{ data.selected_board_game.product_description }}<br>
+                    {{ data.selected_board_game.price }}円<br>
+                </p>
+            </div>
+        </template>
+    </div>
+    <script src="script/vue@3.2.36.js"></script>
+    <script>
+        let app = {
+            setup() {
+                let data = Vue.reactive({
+                    board_game_list: null,
+                    selected_board_game: null
+                });
+
+                let clicked_board_game_item = (event) => {
+                    let selected_board_game_id = event.target.dataset.id;
+                    let url = 'https://young2022.herokuapp.com/api/board-game/' + selected_board_game_id;
+                    fetch(url)
+                        .then(response => {
+                            return response.json();
+                        })
+                        .then(json => {
+                            data.selected_board_game = json;
+                        });
+                }
+
+                const url = 'https://young2022.herokuapp.com/api/board-game';
+                fetch(url)
+                    .then(response => {
+                        return response.json();
+                    })
+                    .then(json => {
+                        data.board_game_list = json;
+                    });
+
+                return {
+                    data,
+                    clicked_board_game_item
+                };
+            }
+        };
+        Vue.createApp(app).mount('#app');
+    </script>
+</body>
