@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>テスト</title>
+    <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+    <h2>クリックしたらカウントアップ</h2>
+    <div id="app">
+        <p>{{ data.count }}</p>
+        <button @click="countUp">カウント</button>
+    </div>
+    <script>
+        let app = {
+            setup() {
+                let data = Vue.reactive({
+                    count: 0
+                });
+                let countUp = () => {
+                    console.log('pushed');
+                    data.count++;
+                };
+                return {
+                    data,
+                    countUp
+                };
+            }
+        };
+        Vue.createApp(app).mount('#app')
+    </script>
+</body>
+
+</html>
