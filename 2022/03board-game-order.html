@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ボードゲーム詳細</title>
+    <link rel="stylesheet" href="style/style.css" type="text/css">
+</head>
+
+<body>
+    <h1>ボードゲーム購入</h1>
+    <div id="app">
+        <template v-if="data.board_game_list">
+            <ul>
+                <li v-for="board_game in data.board_game_list" class="board_game_item">
+                    <button v-on:click="clicked_board_game_item" v-bind:data-id="board_game.id">
+                        {{ board_game.title }}
+                    </button>
+                    （{{ board_game.price }}円）<br>
+                </li>
+            </ul>
+            <p>この下にクリックしたものの詳細を表示します。</p>
+        </template>
+        <template v-if="data.selected_board_game">
+            <div class="selected_board_game">
+                <h2>{{ data.selected_board_game.title }}</h2>
+                <p>
+                    <img v-bind:src="data.selected_board_game.product_image"><br>
+                    {{ data.selected_board_game.product_description }}<br>
+                    {{ data.selected_board_game.price }}円<br>
+                </p>
+                <!-- trueにすることで該当のtemplateが表示される -->
+                <button v-on:click="data.clicked_board_game_order = true">
+                    購入に進む
+                </button>
+            </div>
+        </template>
+        <template v-if="data.clicked_board_game_order">
+            購入手続き
+            <h2>{{ data.selected_board_game.title }}</h2>
+            <form>
+                <p>
+                    <!-- v-modelは、入力値がJavaScriptに連動する -->
+                    数量：<input type="number" v-model="data.quantity">
+                </p>
+                <h3>購入者情報の入力</h3>
+                <p>
+                    氏名：<input type="text" v-model="data.name">
+                </p>
+                <p>
+                    電話番号：<input type="number" v-model="data.number">
+                </p>
+                <p>
+                    郵便番号：<input type="number" v-model="data.zip_code">
+                </p>
+                <p>
+                    住所：<input type="text" v-model="data.address">
+                </p>
+                <p>
+                    <button type="button" v-on:click="clicked_board_game_order_sent">
+                        購入する
+                    </button>
+                </p>
+            </form>
+        </template>
+        <template v-if="data.board_game_order_success">
+            購入が完了しました！
+        </template>
+    </div>
+    <script src="script/vue@3.2.36.js"></script>
+    <script>
+        let app = {
+            setup() {
+                let data = Vue.reactive({
+                    board_game_list: null,
+                    selected_board_game: null,
+                    clicked_board_game_order: false,
+                    board_game_order_success: false,
+                    quantity: null,
+                    name: null,
+                    number: null,
+                    zip_code: null,
+                    address: null,
+                });
+
+                let clicked_board_game_item = (event) => {
+                    let selected_board_game_id = event.target.dataset.id;
+                    let url = 'https://young2022.herokuapp.com/api/board-game/' + selected_board_game_id;
+                    fetch(url)
+                        .then(response => {
+                            return response.json();
+                        })
+                        .then(json => {
+                            data.selected_board_game = json;
+                        });
+                };
+
+                let clicked_board_game_order_sent = (event) => {
+                    let post_data = {
+                        items: [
+                            {
+                                id: data.selected_board_game.id,
+                                quantity: data.quantity,
+                            }
+                        ],
+                        name: data.name,
+                        number: data.number,
+                        zip_code: data.zip_code,
+                        address: data.address
+                    };
+
+                    console.log(post_data);
+
+                    let url = 'https://young2022.herokuapp.com/api/order';
+                    fetch(url, {
+                        // APIドキュメントにPOSTと書いてあったらPOSTにする
+                        method: 'POST',
+                        // 送るデータがJSON形式であることをAPIサーバに伝える
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        // APIに通信するため、文字列に変換
+                        body: JSON.stringify(post_data),
+                    })
+                        .then(response => {
+                            return response.json();
+                        })
+                        .then(json => {
+                            // 購入が完了したメッセージを出すためにtrueにする
+                            data.board_game_order_success = true;
+                        });
+                };
+
+                let url = 'https://young2022.herokuapp.com/api/board-game';
+                fetch(url)
+                    .then(response => {
+                        return response.json();
+                    })
+                    .then(json => {
+                        data.board_game_list = json;
+                    });
+                return {
+                    data,
+                    clicked_board_game_item,
+                    clicked_board_game_order_sent
+                };
+            }
+        };
+        Vue.createApp(app).mount('#app');
+
+
+
+    </script>
+</body>
