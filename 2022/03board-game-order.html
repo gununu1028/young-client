@@ -29,20 +29,25 @@
                     {{ data.selected_board_game.product_description }}<br>
                     {{ data.selected_board_game.price }}円<br>
                 </p>
-                <!-- trueにすることで該当のtemplateが表示される -->
-                <button v-on:click="data.clicked_board_game_order = true">
-                    購入に進む
-                </button>
-            </div>
-        </template>
-        <template v-if="data.clicked_board_game_order">
-            購入手続き
-            <h2>{{ data.selected_board_game.title }}</h2>
-            <form>
                 <p>
                     <!-- v-modelは、入力値がJavaScriptに連動する -->
                     数量：<input type="number" v-model="data.quantity">
+                    <button v-on:click="clicked_board_game_cart" v-bind:data-id="data.selected_board_game.id">カートに入れる</button>
                 </p>
+            </div>
+        </template>
+        <template v-if="data.clicked_cart">
+            <p>
+                ボタンを押して購入手続きに進んでください。
+            </p>
+            <!-- trueにすることで該当のtemplateが表示される -->
+            <button v-on:click="data.clicked_board_game_order = true">
+                購入手続きに進む
+            </button>
+        </template>
+        <template v-if="data.clicked_board_game_order">
+            <h2>{{ data.selected_board_game.title }}</h2>
+            <form>
                 <h3>購入者情報の入力</h3>
                 <p>
                     氏名：<input type="text" v-model="data.name">
@@ -74,6 +79,8 @@
                 let data = Vue.reactive({
                     board_game_list: null,
                     selected_board_game: null,
+                    selected_board_game_list: [],
+                    clicked_cart: false,
                     clicked_board_game_order: false,
                     board_game_order_success: false,
                     quantity: null,
@@ -83,6 +90,7 @@
                     address: null,
                 });
 
+                // ボードゲームを選んだとき
                 let clicked_board_game_item = (event) => {
                     let selected_board_game_id = event.target.dataset.id;
                     let url = 'https://young2022.herokuapp.com/api/board-game/' + selected_board_game_id;
@@ -95,14 +103,21 @@
                         });
                 };
 
+                // カートに入れたとき
+                let clicked_board_game_cart = (event) => {
+                    let selected_board_game_id = event.target.dataset.id;
+                    let item = {
+                        id: data.selected_board_game.id,
+                        quantity: data.quantity
+                    };
+                    data.selected_board_game_list.push(item);
+                    console.log(data.selected_board_game_list);
+                    data.clicked_cart = true;
+                };
+
                 let clicked_board_game_order_sent = (event) => {
                     let post_data = {
-                        items: [
-                            {
-                                id: data.selected_board_game.id,
-                                quantity: data.quantity,
-                            }
-                        ],
+                        items: data.selected_board_game_list,
                         name: data.name,
                         number: data.number,
                         zip_code: data.zip_code,
@@ -142,13 +157,11 @@
                 return {
                     data,
                     clicked_board_game_item,
-                    clicked_board_game_order_sent
+                    clicked_board_game_cart,
+                    clicked_board_game_order_sent,
                 };
             }
         };
         Vue.createApp(app).mount('#app');
-
-
-
     </script>
 </body>
