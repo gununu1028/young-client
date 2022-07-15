@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>観光地一覧</title>
+    <style>
+        li {
+            border: 1px solid black;
+            list-style: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>観光地一覧</h1>
+    <div id="app">
+        <!-- v-ifと書くことで、sightseeing_listに代入されたらtempleteタグの中を表示する -->
+        <template v-if="data.sightseeing_list">
+            <ul>
+                <!-- v-forは繰り返し、sightseeing_listの中身を一つずつ取り出す -->
+                <li v-for="s in data.sightseeing_list">
+                    <!-- 属性に値を入れ込むときはv-bind -->
+                    <img v-bind:src="s.photo" width="500"><br>
+                    <!-- 中括弧{{ }} ははじまりとおわりは2個ずつ -->
+                    {{ s.title }}<br>
+                    {{ s.genre }}<br>
+                    {{ s.price }}<br>
+                    {{ s.location }}<br>
+                </li>
+            </ul>
+        </template>
+    </div>
+    <script src="script/vue@3.2.36.js"></script>
+    <script>
+        let app = {
+            setup() {
+                let data = Vue.reactive({
+                    sightseeing_list: null
+                });
+                // 観光地一覧APIのURL
+                let url = 'https://young2022.herokuapp.com/api/sightseeing';
+                // APIに繋ぐ
+                fetch(url)
+                    .then(response => {
+                        // レスポンス（返ってきたデータ）を把握
+                        return response.json();
+                    })
+                    .then(json => {
+                        // 返ってきたJSONを代入
+                        data.sightseeing_list = json;
+                    });
+                return {
+                    data
+                };
+            }
+        };
+        Vue.createApp(app).mount('#app');
+    </script>
+</body>
+
+</html>

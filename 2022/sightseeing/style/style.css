@@ -1,0 +1,12 @@
+.board_game_item button {
+  font-size: 1em;
+  background-color: transparent;
+  border: 0;
+  color: blue;
+  text-decoration: underline;
+}
+
+.selected_board_game img {
+  width: 500px;
+  height: auto;
+}
