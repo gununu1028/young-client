@@ -46,6 +46,7 @@
                     selected_sightseeing: null
                 });
                 let clicked_sightseeing = (event) => {
+                    // v-bind:data-idのこと
                     let selected_id = event.target.dataset.id;
                     let url = 'https://young2022.herokuapp.com/api/sightseeing/' + selected_id;
                     fetch(url)

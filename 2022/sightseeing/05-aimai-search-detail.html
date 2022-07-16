@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>観光地一覧</title>
+    <style>
+        li {
+            border: 1px solid black;
+            list-style: none;
+        }
+
+        .sightseeing_detail_background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .sightseeing_detail_content {
+            width: 500px;
+            margin: 0 auto;
+            margin-top: 50px;
+            background-color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>観光地検索（あいまい検索版）</h1>
+    <div id="app">
+        <div>
+            <input type="text" v-model="data.input_search_text">
+            <button type="button" v-on:click="clicked_search">検索</button>
+        </div>
+        <template v-if="data.show_search_result">
+            <p>{{ data.filtered_sightseeing_list.length }}件の観光地があります。</p>
+            <ul>
+                <li v-for="s in data.filtered_sightseeing_list">
+                    <img v-bind:src="s.photo" width="200"><br>
+                    {{ s.title }}<br>
+                    {{ s.genre }}<br>
+                    <button type="button" v-on:click="clicked_sightseeing" v-bind:data-id="s.id">
+                        詳しい情報を見る
+                    </button>
+                </li>
+            </ul>
+        </template>
+        <template v-if="data.show_sightseeing_detail">
+            <div class="sightseeing_detail_background">
+                <div class="sightseeing_detail_content">
+                    <img v-bind:src="data.selected_sightseeing.photo" width="500"><br>
+                    {{ data.selected_sightseeing.title }}<br>
+                    {{ data.selected_sightseeing.genre }}<br>
+                    {{ data.selected_sightseeing.price }}<br>
+                    {{ data.selected_sightseeing.location }}<br>
+                    {{ data.selected_sightseeing.access }}<br>
+                    {{ data.selected_sightseeing.sightseeing_description }}<br>
+                    <button type="button" v-on:click="clicked_close_sightseeing">
+                        閉じる
+                    </button>
+                </div>
+            </div>
+        </template>
+    </div>
+    <script src="script/vue@3.2.36.js"></script>
+    <script>
+        let app = {
+            setup() {
+                let data = Vue.reactive({
+                    sightseeing_list: null,
+                    filtered_sightseeing_list: null,
+                    show_search_result: false,
+                    input_search_text: null,
+                    show_sightseeing_detail: false,
+                    selected_sightseeing: null
+                });
+                let clicked_search = () => {
+                    data.filtered_sightseeing_list = data.sightseeing_list.filter(search_text)
+                    data.show_search_result = true;
+                };
+                let search_text = (s) => {
+                    let title_inludes = s.title.includes(data.input_search_text);
+                    let genre_includes = s.genre.includes(data.input_search_text);
+                    let location_includes = s.location.includes(data.input_search_text);
+                    return title_inludes || genre_includes || location_includes;
+                }
+                let clicked_sightseeing = (event) => {
+                    // v-bind:data-idのこと
+                    let selected_id = event.target.dataset.id;
+                    let url = 'https://young2022.herokuapp.com/api/sightseeing/' + selected_id;
+                    fetch(url)
+                        .then(response => {
+                            return response.json();
+                        })
+                        .then(json => {
+                            data.selected_sightseeing = json;
+                            data.show_sightseeing_detail = true;
+                        });
+                };
+                let clicked_close_sightseeing = () => { 
+                    data.show_sightseeing_detail = false;
+                }
+                let url = 'https://young2022.herokuapp.com/api/sightseeing';
+                fetch(url)
+                    .then(response => {
+                        return response.json();
+                    })
+                    .then(json => {
+                        data.sightseeing_list = json;
+                    });
+                return {
+                    data,
+                    clicked_search,
+                    clicked_sightseeing,
+                    clicked_close_sightseeing
+                };
+            }
+        };
+        Vue.createApp(app).mount('#app');
+    </script>
+</body>
+
+</html>
