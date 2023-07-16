@@ -30,9 +30,9 @@
             },
             async mounted() {
                 // セリフ一覧APIのURL
-                const url = 'https://japanskills2023.m5a.jp/api/dialogs';
+                url = 'https://japanskills2023.m5a.jp/api/dialogs';
                 // APIに接続
-                const response = await fetch(url);
+                response = await fetch(url);
                 // レスポンス（返ってきたデータ）を表示用変数dialogsに格納
                 this.dialogs = await response.json();
             }
