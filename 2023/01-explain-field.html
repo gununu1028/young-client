@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ボードゲーム一覧</title>
+</head>
+
+<body>
+    <h1>ボードゲーム一覧</h1>
+    <div id="app">
+        <!-- v-ifと書くことで、board_game_listに代入されたらtempleteタグの中を表示する -->
+        <template v-if="data.board_game_list">
+            <ul>
+                <!-- v-forは繰り返し、board_game_listの中身を一つずつ取り出す -->
+                <li v-for="board_game in data.board_game_list" class="board_game_item">
+                    <!-- 中括弧{{ }} ははじまりとおわりは2個ずつ -->
+                    {{ board_game.title }}
+                    （{{ board_game.price }}円）
+                </li>
+            </ul>
+        </template>
+    </div>
+    <script src="script/vue.global.js"></script>
+    <script>
+        let app = {
+            setup() {
+                let data = Vue.reactive({
+                    board_game_list: null
+                });
+                // ボードゲーム一覧APIのURL
+                let url = 'https://japanskills2023.m5a.jp/api/dialogs';
+                // APIに繋げる
+                fetch(url)
+                    .then(response => {
+                        // レスポンス（返ってきたデータ）を把握
+                        return response.json();
+                    })
+                    .then(json => {
+                        // 返ってきたJSONを代入
+                        data.board_game_list = json;
+                    });
+
+                return {
+                    data
+                };
+            }
+        };
+        Vue.createApp(app).mount('#app');
+    </script>
+</body>
