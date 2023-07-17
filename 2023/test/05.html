@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>バーチャル博物館</title>
+</head>
+
+<body>
+    <h1>バーチャル博物館</h1>
+    <div id="app">
+        <div v-if="display_mode == 'field'">
+            <button type="button" @click="start_talk_a()">スタッフAと会話する</button><br>
+            <button type="button" @click="start_talk_c()">スタッフCと会話する</button><br>
+            <button type="button" @click="start_talk_d()">スタッフDと会話する</button><br>
+            <button type="button" @click="start_talk_e()">スタッフEと会話する</button>
+        </div>
+        <div v-else-if="display_mode == 'talk_a'">
+            {{ a_dialog_body(a_dialog_order) }}
+        </div>
+        <div v-else-if="display_mode == 'talk_c'">
+            {{ c_dialog_body(c_dialog_order) }}
+            <div v-if="answering_question">
+                <button type="button" @click="answer_question(5)">5</button><br>
+                <button type="button" @click="answer_question(4)">4</button><br>
+                <button type="button" @click="answer_question(3)">3</button><br>
+                <button type="button" @click="answer_question(2)">2</button><br>
+                <button type="button" @click="answer_question(1)">1</button><br>
+            </div>
+        </div>
+        <div v-else-if="display_mode == 'talk_d'">
+            {{ d_dialog_body(d_dialog_order) }}
+            <div v-if="answering_question">
+                <button type="button" @click="edit_survey(5)">5</button><br>
+                <button type="button" @click="edit_survey(4)">4</button><br>
+                <button type="button" @click="edit_survey(3)">3</button><br>
+                <button type="button" @click="edit_survey(2)">2</button><br>
+                <button type="button" @click="edit_survey(1)">1</button><br>
+            </div>
+        </div>
+        <div v-else-if="display_mode == 'talk_e'">
+            {{ e_dialog_body(e_dialog_order) }}
+        </div>
+    </div>
+    <script src="script/vue.global.js"></script>
+    <script>
+        // JavaScriptは是非取り組んでみてください。 
+    </script>
+</body>
