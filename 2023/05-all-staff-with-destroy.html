@@ -99,12 +99,19 @@
                 e_dialog_body(order) {
                     e = this.dialogs.filter(item => item.staff == "E");
                     e.sort((a, b) => a.order - b.order);
-                    return d[order].body;
+                    if (order < e.length - 1) {
+                        return e[order].body + '（Spaceキーで次へ）';
+                    } else {
+                        return e[e.length - 1].body;
+                    }
                 },
                 push_space_key(event) {
                     if (event.code == 'Space') {
                         if (this.display_mode == 'talk_a') {
                             this.a_dialog_order++;
+                        } else if (this.display_mode == 'talk_e') {
+                            this.e_dialog_order++;
+                            this.destroy_survey();
                         }
                     }
                 },
@@ -157,7 +164,7 @@
                         console.log('エラー発生');
                     }
                 },
-                async destroy_survey(star){
+                async destroy_survey() {
                     survey_id = localStorage.getItem('survey_id');
                     if (survey_id == null) {
                         console.log('エラー発生');
