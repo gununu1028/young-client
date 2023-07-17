@@ -9,7 +9,7 @@
 <body>
     <h1>スタッフCによるアンケート</h1>
     <div id="app">
-        <button type="button" @click="start_talk_a()">スタッフCと会話する</button>
+        <button type="button" @click="start_talk_c()">スタッフCと会話する</button>
         <div v-if="started_talk_c">
             {{ c_dialog_body(c_dialog_order) }}
         </div>
@@ -40,30 +40,35 @@
                 window.addEventListener('keydown', this.push_space_key);
             },
             methods: {
-                start_talk_a() {
+                start_talk_c() {
                     this.started_talk_c = true;
                     this.answering_question = true;
-                },
-                answer_question(star) {
-                    const postData = {
-                        star: 1
-                    };
-                    url = 'https://japanskills2023.m5a.jp/api/survey';
-                    fetch(url,
-                        {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(postData)
-                        }
-                    );
-                    this.c_dialog_order++;
                 },
                 c_dialog_body(order) {
                     c = this.dialogs.filter(item => item.staff == "C");
                     c.sort((a, b) => a.order - b.order);
                     return c[order].body;
+                },
+                async answer_question(star) {
+                    post_data = {
+                        star: 1
+                    };
+                    url = 'https://japanskills2023.m5a.jp/api/survey';
+                    response = await fetch(url,
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(post_data)
+                        }
+                    );
+                    if (response.status == 200) {
+                        this.c_dialog_order++;
+                        this.answering_question = false;
+                    } else {
+                        console.log('エラー発生');
+                    }
                 }
             },
         });
