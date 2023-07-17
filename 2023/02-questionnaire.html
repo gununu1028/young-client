@@ -36,8 +36,6 @@
                 url = 'https://japanskills2023.m5a.jp/api/dialogs';
                 response = await fetch(url);
                 this.dialogs = await response.json();
-                console.log(this.dialogs);
-                window.addEventListener('keydown', this.push_space_key);
             },
             methods: {
                 start_talk_c() {
