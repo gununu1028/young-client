@@ -1,0 +1,45 @@
+#field {
+    position: relative;
+    width: 1024px;
+    height: 768px;
+    border: 1px solid black;
+}
+
+#character,
+#staff_a,
+#staff_b,
+#staff_c,
+#staff_d,
+#staff_e {
+    position: absolute;
+    width: 200px;
+    height: 50px;
+    border: 1px solid black;
+    text-align: center;
+    line-height: 50px;
+}
+
+#staff_a {
+    top: 250px;
+    left: 100px;
+}
+
+#staff_b {
+    top: 450px;
+    left: 100px;
+}
+
+#staff_c {
+    top: 150px;
+    left: 700px;
+}
+
+#staff_d {
+    top: 350px;
+    left: 700px;
+}
+
+#staff_e {
+    top: 550px;
+    left: 700px;
+}
