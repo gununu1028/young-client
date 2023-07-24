@@ -38,20 +38,16 @@ app = Vue.createApp({
                 character_rect = character.getBoundingClientRect();
 
                 if (
-                    character_rect.left < staff_position.right &&
-                    character_rect.right > staff_position.left &&
-                    character_rect.top < staff_position.bottom &&
-                    character_rect.bottom > staff_position.top
+                    character_rect.left <= staff_position.right &&
+                    character_rect.right >= staff_position.left &&
+                    character_rect.top <= staff_position.bottom &&
+                    character_rect.bottom >= staff_position.top
                 ) {
                     this.is_event = true;
-                    alert('セリフ開始！');
+                    this.display_mode = staff_id;
                     return;
                 }
             }
-        },
-        show_scene(staff_id) {
-            const scene_id = 'scene_' + staff_id.split('_')[1];
-            this.current_scene = scene_id;
         },
         character_position_style() {
             return { 'left': this.character_position.x + 'px', 'top': this.character_position.y + 'px' }

@@ -8,30 +8,52 @@
 
 <body>
     <div id="app">
-        <div id="field" v-if="display_mode == 'first'">
-            <div id="character" :style="character_position_style()">
-                操作キャラクター
+        <div id="field">
+            <div v-if="display_mode == 'first'">
+                <div id="character" :style="character_position_style()">
+                    操作キャラクター
+                </div>
+                <div id="staff_a">スタッフA</div>
+                <div id="staff_b">スタッフB</div>
+                <div id="staff_c">スタッフC</div>
+                <div id="staff_d">スタッフD</div>
+                <div id="staff_e">スタッフE</div>
             </div>
-            <div id="staff_a">スタッフA</div>
-            <div id="staff_b">スタッフB</div>
-            <div id="staff_c">スタッフC</div>
-            <div id="staff_d">スタッフD</div>
-            <div id="staff_e">スタッフE</div>
-        </div>
-        <div v-else-if="display_mode == 'staff_a'">
-            スタッフA
-        </div>
-        <div v-else-if="display_mode == 'staff_b'">
-            スタッフB
-        </div>
-        <div v-else-if="display_mode == 'staff_c'">
-            スタッフC
-        </div>
-        <div v-else-if="display_mode == 'staff_d'">
-            スタッフD
-        </div>
-        <div v-else-if="display_mode == 'staff_e'">
-            スタッフE
+            <div v-else-if="display_mode == 'staff_a'" class="staff_a_conversation">
+                <div class="option"></div>
+                <div class="dialog">
+                    <div>スタッフA</div>
+                    <div></div>
+                </div>
+            </div>
+            <div v-else-if="display_mode == 'staff_b'" class="staff_b_conversation">
+                <div class="option"></div>
+                <div class="dialog">
+                    <div>スタッフB</div>
+                    <div></div>
+                </div>
+            </div>
+            <div v-else-if="display_mode == 'staff_c'" class="staff_c_conversation">
+                <div class="option"></div>
+                <div class="dialog">
+                    <div>スタッフC</div>
+                    <div></div>
+                </div>
+            </div>
+            <div v-else-if="display_mode == 'staff_d'" class="staff_d_conversation">
+                <div class="option"></div>
+                <div class="dialog">
+                    <div>スタッフD</div>
+                    <div></div>
+                </div>
+            </div>
+            <div v-else-if="display_mode == 'staff_e'" class="staff_e_conversation">
+                <div class="option"></div>
+                <div class="dialog">
+                    <div>スタッフE</div>
+                    <div></div>
+                </div>
+            </div>
         </div>
     </div>
     <script src="script/vue.global.js"></script>
