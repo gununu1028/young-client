@@ -2,33 +2,42 @@ app = Vue.createApp({
     data() {
         return {
             character_position: { x: 400, y: 350 },
-            is_event: false,
-            display_mode: "first"
+            display_mode: 'first',
+            dialogs_json: null,
+            order: null
         };
     },
     methods: {
-        move_character(event) {
-            if (this.is_event) return;
+        push_key(event) {
+            if (this.starting_conversation()) {
+                if (event.code == 'Space') {
+                    if (this.order < this.target_dialogs_length('A')) {
+                        this.order++;
+                    } else {
+                        this.display_mode = 'first';
+                        this.character_position = { x: 400, y: 350 };
+                    }
+                }
+            } else {
+                switch (event.code) {
+                    case 'ArrowUp':
+                        this.character_position.y -= 10;
+                        break;
+                    case 'ArrowRight':
+                        this.character_position.x += 10;
+                        break;
+                    case 'ArrowDown':
+                        this.character_position.y += 10;
+                        break;
+                    case 'ArrowLeft':
+                        this.character_position.x -= 10;
+                        break;
 
-            switch (event.key) {
-                case 'ArrowUp':
-                    this.character_position.y -= 10;
-                    break;
-                case 'ArrowRight':
-                    this.character_position.x += 10;
-                    break;
-                case 'ArrowDown':
-                    this.character_position.y += 10;
-                    break;
-                case 'ArrowLeft':
-                    this.character_position.x -= 10;
-                    break;
+                }
+                this.character_position.x = Math.max(0, Math.min(this.character_position.x, 500));
+                this.character_position.y = Math.max(0, Math.min(this.character_position.y, 500));
+                this.check_collisions();
             }
-
-            this.character_position.x = Math.max(0, Math.min(this.character_position.x, 500));
-            this.character_position.y = Math.max(0, Math.min(this.character_position.y, 500));
-
-            this.check_collisions();
         },
         check_collisions() {
             staffs = ['staff_a', 'staff_b', 'staff_c', 'staff_d', 'staff_e'];
@@ -43,22 +52,37 @@ app = Vue.createApp({
                     character_rect.top <= staff_position.bottom &&
                     character_rect.bottom >= staff_position.top
                 ) {
-                    this.is_event = true;
                     this.display_mode = staff_id;
+                    this.order = 1;
                     return;
                 }
             }
         },
         character_position_style() {
             return { 'left': this.character_position.x + 'px', 'top': this.character_position.y + 'px' }
+        },
+        starting_conversation() {
+            return this.display_mode != 'first';
+        },
+        a_dialog_body() {
+            target_dialog = this.dialogs_json.find(item => item.staff == 'A' && item.order == this.order);
+            a = this.dialogs_json.filter(item => item.staff == 'A');
+            if (this.order < a.length) {
+                return target_dialog.body + '（Spaceキーで次へ）';
+            } else {
+                return target_dialog.body + '（Spaceキーでフィールドに戻る）'
+            }
+        },
+        target_dialogs_length(staff) {
+            target_dialogs = this.dialogs_json.filter(item => item.staff == staff)
+            return target_dialogs.length;
         }
     },
-    mounted() {
-        window.addEventListener('keydown', this.move_character);
-        // Load character position from localStorage
-        if (localStorage.getItem('character_position')) {
-            // app.character_position = JSON.parse(localStorage.getItem('character_position'));
-        }
+    async mounted() {
+        url = 'https://japanskills2023.m5a.jp/api/dialogs';
+        response = await fetch(url);
+        this.dialogs_json = await response.json();
+        window.addEventListener('keydown', this.push_key);
     }
 });
 

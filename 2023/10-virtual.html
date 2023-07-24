@@ -23,7 +23,9 @@
                 <div class="option"></div>
                 <div class="dialog">
                     <div>スタッフA</div>
-                    <div></div>
+                    <div>
+                        {{ a_dialog_body() }}
+                    </div>
                 </div>
             </div>
             <div v-else-if="display_mode == 'staff_b'" class="staff_b_conversation">
