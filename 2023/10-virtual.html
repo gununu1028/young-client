@@ -7,13 +7,32 @@
 </head>
 
 <body>
-    <div id="field">
-        <div id="character">操作キャラクター</div>
-        <div id="staff_a">スタッフA</div>
-        <div id="staff_b">スタッフB</div>
-        <div id="staff_c">スタッフC</div>
-        <div id="staff_d">スタッフD</div>
-        <div id="staff_e">スタッフE</div>
+    <div id="app">
+        <div id="field" v-if="display_mode == 'first'">
+            <div id="character" :style="character_position_style()">
+                操作キャラクター
+            </div>
+            <div id="staff_a">スタッフA</div>
+            <div id="staff_b">スタッフB</div>
+            <div id="staff_c">スタッフC</div>
+            <div id="staff_d">スタッフD</div>
+            <div id="staff_e">スタッフE</div>
+        </div>
+        <div v-else-if="display_mode == 'staff_a'">
+            スタッフA
+        </div>
+        <div v-else-if="display_mode == 'staff_b'">
+            スタッフB
+        </div>
+        <div v-else-if="display_mode == 'staff_c'">
+            スタッフC
+        </div>
+        <div v-else-if="display_mode == 'staff_d'">
+            スタッフD
+        </div>
+        <div v-else-if="display_mode == 'staff_e'">
+            スタッフE
+        </div>
     </div>
     <script src="script/vue.global.js"></script>
     <script src="script/virtual-museum.js"></script>

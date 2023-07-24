@@ -1,68 +1,69 @@
-// キャラクターの座標
-character_position = { x: 400, y: 350 };
-is_event = false; // 会話イベント中か否か
+app = Vue.createApp({
+    data() {
+        return {
+            character_position: { x: 400, y: 350 },
+            is_event: false,
+            display_mode: "first"
+        };
+    },
+    methods: {
+        move_character(event) {
+            if (this.is_event) return;
 
-// ローカルストレージから座標を読み込む
-if (localStorage.getItem('character_position')) {
-    // character_position = JSON.parse(localStorage.getItem('character_position'));
-}
+            switch (event.key) {
+                case 'ArrowUp':
+                    this.character_position.y -= 10;
+                    break;
+                case 'ArrowRight':
+                    this.character_position.x += 10;
+                    break;
+                case 'ArrowDown':
+                    this.character_position.y += 10;
+                    break;
+                case 'ArrowLeft':
+                    this.character_position.x -= 10;
+                    break;
+            }
 
-character = document.getElementById('character');
-character.style.left = `${character_position.x}px`;
-character.style.top = `${character_position.y}px`;
+            this.character_position.x = Math.max(0, Math.min(this.character_position.x, 500));
+            this.character_position.y = Math.max(0, Math.min(this.character_position.y, 500));
 
-// キーボードのキーが押されたとき
-window.addEventListener('keydown', function (event) {
-    if (is_event) return; // 会話イベント中は移動不可
+            this.check_collisions();
+        },
+        check_collisions() {
+            staffs = ['staff_a', 'staff_b', 'staff_c', 'staff_d', 'staff_e'];
+            for (staff_id of staffs) {
+                staff = document.getElementById(staff_id);
+                staff_position = staff.getBoundingClientRect();
+                character_rect = character.getBoundingClientRect();
 
-    switch (event.key) {
-        case 'ArrowUp':
-            character_position.y -= 10;
-            break;
-        case 'ArrowRight':
-            character_position.x += 10;
-            break;
-        case 'ArrowDown':
-            character_position.y += 10;
-            break;
-        case 'ArrowLeft':
-            character_position.x -= 10;
-            break;
-    }
-
-    // 施設の範囲を超えないように制限
-    character_position.x = Math.max(0, Math.min(character_position.x, 500));
-    character_position.y = Math.max(0, Math.min(character_position.y, 500));
-
-    // 座標を更新
-    character.style.left = `${character_position.x}px`;
-    character.style.top = `${character_position.y}px`;
-
-    // 座標をローカルストレージに保存
-    localStorage.setItem('character_position', JSON.stringify(character_position));
-
-    // 会話イベントのチェック
-    staffs = ['staff_a', 'staff_b', 'staff_c', 'staff_d', 'staff_e']; 
-    for (i = 0; i < staffs.length; i++) {
-        staff = document.getElementById(staffs[i]);
-        staff_position = staff.getBoundingClientRect();
-        character_rect = character.getBoundingClientRect();
-
-        // 簡易的な衝突判定
-        if (character_rect.left < staff_position.right &&
-            character_rect.right > staff_position.left &&
-            character_rect.top < staff_position.bottom &&
-            character_rect.bottom > staff_position.top) {
-            // 会話イベント開始
-            is_event = true;
-            // ここで会話イベントの処理を行う
+                if (
+                    character_rect.left < staff_position.right &&
+                    character_rect.right > staff_position.left &&
+                    character_rect.top < staff_position.bottom &&
+                    character_rect.bottom > staff_position.top
+                ) {
+                    this.is_event = true;
+                    alert('セリフ開始！');
+                    return;
+                }
+            }
+        },
+        show_scene(staff_id) {
+            const scene_id = 'scene_' + staff_id.split('_')[1];
+            this.current_scene = scene_id;
+        },
+        character_position_style() {
+            return { 'left': this.character_position.x + 'px', 'top': this.character_position.y + 'px' }
+        }
+    },
+    mounted() {
+        window.addEventListener('keydown', this.move_character);
+        // Load character position from localStorage
+        if (localStorage.getItem('character_position')) {
+            // app.character_position = JSON.parse(localStorage.getItem('character_position'));
         }
     }
 });
 
-// キーボードのキーが離れたとき
-window.addEventListener('keyup', function (event) {
-    if (is_event) {
-        alert('セリフ開始！');
-    }
-});
+app.mount('#app');
