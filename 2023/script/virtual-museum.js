@@ -5,7 +5,8 @@ app = Vue.createApp({
             display_mode: 'first',
             dialogs_json: null,
             order: null,
-            c_dialog_body: null
+            c_dialog_body: null,
+            d_dialog_body: null
         };
     },
     methods: {
@@ -78,7 +79,7 @@ app = Vue.createApp({
             target_dialogs = this.dialogs_json.filter(item => item.staff == staff)
             return target_dialogs.length;
         },
-        async answer_question(star) {
+        async answer_survey(star) {
             post_data = {
                 star: star
             };
@@ -100,6 +101,31 @@ app = Vue.createApp({
                 console.log('エラー発生');
             }
         },
+        async edit_survey(star) {
+            survey_id = localStorage.getItem('survey_id');
+            if (survey_id == null) {
+                console.log('エラー発生');
+                return;
+            }
+            put_data = {
+                star: star
+            };
+            url = 'https://japanskills2023.m5a.jp/api/survey/' + survey_id;
+            response = await fetch(url,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(put_data)
+                }
+            );
+            if (response.status == 200) {
+                this.d_dialog_body = 'アンケートを編集しました。'
+            } else {
+                console.log('エラー発生');
+            }
+        },
     },
     async mounted() {
         window.addEventListener('keydown', this.push_key);
@@ -108,6 +134,8 @@ app = Vue.createApp({
         this.dialogs_json = await response.json();
         c_target_dialog = this.dialogs_json.find(item => item.staff == 'C');
         this.c_dialog_body = c_target_dialog.body;
+        d_target_dialog = this.dialogs_json.find(item => item.staff == 'D');
+        this.d_dialog_body = d_target_dialog.body;
     }
 });
 

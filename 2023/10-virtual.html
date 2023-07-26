@@ -35,11 +35,11 @@
             </div>
             <div v-else-if="display_mode == 'staff_c'" class="staff_c_conversation">
                 <div class="option">
-                    <button type="button" @click="answer_question(5)">5</button>
-                    <button type="button" @click="answer_question(4)">4</button>
-                    <button type="button" @click="answer_question(3)">3</button>
-                    <button type="button" @click="answer_question(2)">2</button>
-                    <button type="button" @click="answer_question(1)">1</button>
+                    <button type="button" @click="answer_survey(5)">5</button>
+                    <button type="button" @click="answer_survey(4)">4</button>
+                    <button type="button" @click="answer_survey(3)">3</button>
+                    <button type="button" @click="answer_survey(2)">2</button>
+                    <button type="button" @click="answer_survey(1)">1</button>
                 </div>
                 <div class="dialog">
                     <div>スタッフC</div>
@@ -47,10 +47,16 @@
                 </div>
             </div>
             <div v-else-if="display_mode == 'staff_d'" class="staff_d_conversation">
-                <div class="option"></div>
+                <div class="option">
+                    <button type="button" @click="edit_survey(5)">5</button>
+                    <button type="button" @click="edit_survey(4)">4</button>
+                    <button type="button" @click="edit_survey(3)">3</button>
+                    <button type="button" @click="edit_survey(2)">2</button>
+                    <button type="button" @click="edit_survey(1)">1</button>
+                </div>
                 <div class="dialog">
                     <div>スタッフD</div>
-                    <div></div>
+                    <div>{{ d_dialog_body }}</div>
                 </div>
             </div>
             <div v-else-if="display_mode == 'staff_e'" class="staff_e_conversation">
