@@ -25,19 +25,37 @@ app = Vue.createApp({
             switch (this.display_mode) {
                 case 'staff_a':
                     dialogs_length = this.target_dialogs_length('A');
+                    if (this.order < dialogs_length) {
+                        this.order++;
+                    } else {
+                        this.set_first_state();
+                    }
                     break;
                 case 'staff_b':
                     dialogs_length = this.target_dialogs_length('B');
+                    if (this.order < dialogs_length) {
+                        this.order++;
+                    } else {
+                        this.set_first_state();
+                    }
                     break;
-                default:
-                    return;
+                case 'staff_c':
+                    if (this.c_dialog_body.includes('（Spaceキーでフィールドに戻る）')) {
+                        this.set_first_state();
+                    }
+                case 'staff_d':
+                    if (this.d_dialog_body.includes('（Spaceキーでフィールドに戻る）')) {
+                        this.set_first_state();
+                    }
+                    break;
+                case 'staff_e':
+                    this.set_first_state();
+                    break;
             }
-            if (this.order < dialogs_length) {
-                this.order++;
-            } else {
-                this.display_mode = 'first';
-                this.character_position = { x: 400, y: 350 };
-            }
+        },
+        set_first_state() {
+            this.display_mode = 'first';
+            this.character_position = { x: 400, y: 350 };
         },
         update_character_position(code) {
             move_amount = 20;
@@ -71,14 +89,23 @@ app = Vue.createApp({
                     character_rect.bottom >= staff_position.top
                 ) {
                     this.display_mode = staff_id;
-                    this.order = 1;
+                    this.start_conversation();
                 }
             }
-            switch (this.display_mode) {
-                case 'staff_e':
-                    this.destroy_survey();
-                    break;
-            }
+        },
+        start_conversation() {
+            this.order = 1;
+
+            c_target_dialog = this.dialogs_json.find(item => item.staff == 'C');
+            this.c_dialog_body = c_target_dialog.body;
+            d_target_dialog = this.dialogs_json.find(item => item.staff == 'D');
+            this.d_dialog_body = d_target_dialog.body;
+            e_target_dialog = this.dialogs_json.find(item => item.staff == 'E');
+            this.e_dialog_body = e_target_dialog.body;
+
+            if (this.display_mode === 'staff_e') {
+                this.destroy_survey();
+            }            
         },
         character_position_style() {
             return { 'left': this.character_position.x + 'px', 'top': this.character_position.y + 'px' }
@@ -124,7 +151,7 @@ app = Vue.createApp({
             if (response.status == 200) {
                 survey = await response.json();
                 localStorage.setItem('survey_id', survey.id);
-                this.c_dialog_body = 'アンケートを投稿しました。'
+                this.c_dialog_body = 'アンケートを投稿しました。（Spaceキーでフィールドに戻る）'
             } else {
                 console.log('エラー発生');
             }
@@ -149,7 +176,7 @@ app = Vue.createApp({
                 }
             );
             if (response.status == 200) {
-                this.d_dialog_body = 'アンケートを編集しました。'
+                this.d_dialog_body = 'アンケートを編集しました。（Spaceキーでフィールドに戻る）'
             } else {
                 console.log('エラー発生');
             }
@@ -178,12 +205,7 @@ app = Vue.createApp({
         url = 'https://japanskills2023.m5a.jp/api/dialogs';
         response = await fetch(url);
         this.dialogs_json = await response.json();
-        c_target_dialog = this.dialogs_json.find(item => item.staff == 'C');
-        this.c_dialog_body = c_target_dialog.body;
-        d_target_dialog = this.dialogs_json.find(item => item.staff == 'D');
-        this.d_dialog_body = d_target_dialog.body;
-        e_target_dialog = this.dialogs_json.find(item => item.staff == 'E');
-        this.e_dialog_body = e_target_dialog.body;
+
     }
 });
 
