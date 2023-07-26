@@ -14,45 +14,49 @@ app = Vue.createApp({
         push_key(event) {
             if (this.starting_conversation()) {
                 if (event.code == 'Space') {
-                    switch (this.display_mode) {
-                        case 'staff_a':
-                            if (this.order < this.target_dialogs_length('A')) {
-                                this.order++;
-                            } else {
-                                this.display_mode = 'first';
-                                this.character_position = { x: 400, y: 350 };
-                            }
-                            break;
-                        case 'staff_b':
-                            if (this.order < this.target_dialogs_length('B')) {
-                                this.order++;
-                            } else {
-                                this.display_mode = 'first';
-                                this.character_position = { x: 400, y: 350 };
-                            }
-                            break;
-                    }
+                    this.update_dialog();
                 }
             } else {
-                switch (event.code) {
-                    case 'ArrowUp':
-                        this.character_position.y -= 10;
-                        break;
-                    case 'ArrowRight':
-                        this.character_position.x += 10;
-                        break;
-                    case 'ArrowDown':
-                        this.character_position.y += 10;
-                        break;
-                    case 'ArrowLeft':
-                        this.character_position.x -= 10;
-                        break;
-
-                }
-                this.character_position.x = Math.max(0, Math.min(this.character_position.x, 1024 - 200));
-                this.character_position.y = Math.max(0, Math.min(this.character_position.y, 768 - 50));
+                this.update_character_position(event.code);
                 this.check_collisions();
             }
+        },
+        update_dialog() {
+            switch (this.display_mode) {
+                case 'staff_a':
+                    dialogs_length = this.target_dialogs_length('A');
+                    break;
+                case 'staff_b':
+                    dialogs_length = this.target_dialogs_length('B');
+                    break;
+                default:
+                    return;
+            }
+            if (this.order < dialogs_length) {
+                this.order++;
+            } else {
+                this.display_mode = 'first';
+                this.character_position = { x: 400, y: 350 };
+            }
+        },
+        update_character_position(code) {
+            move_amount = 20;
+            switch (code) {
+                case 'ArrowUp':
+                    this.character_position.y -= move_amount;
+                    break;
+                case 'ArrowRight':
+                    this.character_position.x += move_amount;
+                    break;
+                case 'ArrowDown':
+                    this.character_position.y += move_amount;
+                    break;
+                case 'ArrowLeft':
+                    this.character_position.x -= move_amount;
+                    break;
+            }
+            this.character_position.x = Math.max(0, Math.min(this.character_position.x, 1024 - 200));
+            this.character_position.y = Math.max(0, Math.min(this.character_position.y, 768 - 50));
         },
         check_collisions() {
             staffs = ['staff_a', 'staff_b', 'staff_c', 'staff_d', 'staff_e'];
@@ -60,7 +64,6 @@ app = Vue.createApp({
                 staff = document.getElementById(staff_id);
                 staff_position = staff.getBoundingClientRect();
                 character_rect = character.getBoundingClientRect();
-
                 if (
                     character_rect.left <= staff_position.right &&
                     character_rect.right >= staff_position.left &&
@@ -92,7 +95,7 @@ app = Vue.createApp({
                 return target_dialog.body + '（Spaceキーでフィールドに戻る）'
             }
         },
-        b_dialog_body() { 
+        b_dialog_body() {
             target_dialog = this.dialogs_json.find(item => item.staff == 'B' && item.order == this.order);
             if (this.order < this.target_dialogs_length('B')) {
                 return target_dialog.body + '（Spaceキーで次へ）';
