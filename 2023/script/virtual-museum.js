@@ -6,7 +6,8 @@ app = Vue.createApp({
             dialogs_json: null,
             order: null,
             c_dialog_body: null,
-            d_dialog_body: null
+            d_dialog_body: null,
+            e_dialog_body: null,
         };
     },
     methods: {
@@ -56,8 +57,12 @@ app = Vue.createApp({
                 ) {
                     this.display_mode = staff_id;
                     this.order = 1;
-                    return;
                 }
+            }
+            switch (this.display_mode) {
+                case 'staff_e':
+                    this.destroy_survey();
+                    break;
             }
         },
         character_position_style() {
@@ -126,6 +131,24 @@ app = Vue.createApp({
                 console.log('エラー発生');
             }
         },
+        async destroy_survey() {
+            survey_id = localStorage.getItem('survey_id');
+            if (survey_id == null) {
+                console.log('エラー発生');
+                return;
+            }
+            url = 'https://japanskills2023.m5a.jp/api/survey/' + survey_id;
+            response = await fetch(url,
+                {
+                    method: 'DELETE'
+                }
+            );
+            if (response.status == 200) {
+                localStorage.removeItem('survey_id');
+            } else {
+                console.log('エラー発生');
+            }
+        }
     },
     async mounted() {
         window.addEventListener('keydown', this.push_key);
@@ -136,6 +159,8 @@ app = Vue.createApp({
         this.c_dialog_body = c_target_dialog.body;
         d_target_dialog = this.dialogs_json.find(item => item.staff == 'D');
         this.d_dialog_body = d_target_dialog.body;
+        e_target_dialog = this.dialogs_json.find(item => item.staff == 'E');
+        this.e_dialog_body = e_target_dialog.body;
     }
 });
 
