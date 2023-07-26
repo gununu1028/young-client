@@ -105,7 +105,7 @@ app = Vue.createApp({
 
             if (this.display_mode === 'staff_e') {
                 this.destroy_survey();
-            }            
+            }
         },
         character_position_style() {
             return { 'left': this.character_position.x + 'px', 'top': this.character_position.y + 'px' }
@@ -205,7 +205,6 @@ app = Vue.createApp({
         url = 'https://japanskills2023.m5a.jp/api/dialogs';
         response = await fetch(url);
         this.dialogs_json = await response.json();
-
     }
 });
 
