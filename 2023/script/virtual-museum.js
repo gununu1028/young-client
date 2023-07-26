@@ -14,11 +14,23 @@ app = Vue.createApp({
         push_key(event) {
             if (this.starting_conversation()) {
                 if (event.code == 'Space') {
-                    if (this.order < this.target_dialogs_length('A')) {
-                        this.order++;
-                    } else {
-                        this.display_mode = 'first';
-                        this.character_position = { x: 400, y: 350 };
+                    switch (this.display_mode) {
+                        case 'staff_a':
+                            if (this.order < this.target_dialogs_length('A')) {
+                                this.order++;
+                            } else {
+                                this.display_mode = 'first';
+                                this.character_position = { x: 400, y: 350 };
+                            }
+                            break;
+                        case 'staff_b':
+                            if (this.order < this.target_dialogs_length('B')) {
+                                this.order++;
+                            } else {
+                                this.display_mode = 'first';
+                                this.character_position = { x: 400, y: 350 };
+                            }
+                            break;
                     }
                 }
             } else {
@@ -75,6 +87,14 @@ app = Vue.createApp({
             target_dialog = this.dialogs_json.find(item => item.staff == 'A' && item.order == this.order);
             a = this.dialogs_json.filter(item => item.staff == 'A');
             if (this.order < a.length) {
+                return target_dialog.body + '（Spaceキーで次へ）';
+            } else {
+                return target_dialog.body + '（Spaceキーでフィールドに戻る）'
+            }
+        },
+        b_dialog_body() { 
+            target_dialog = this.dialogs_json.find(item => item.staff == 'B' && item.order == this.order);
+            if (this.order < this.target_dialogs_length('B')) {
                 return target_dialog.body + '（Spaceキーで次へ）';
             } else {
                 return target_dialog.body + '（Spaceキーでフィールドに戻る）'
