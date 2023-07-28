@@ -58,7 +58,7 @@ app = Vue.createApp({
             this.character_position = { x: 400, y: 350 };
         },
         update_character_position(code) {
-            move_amount = 20;
+            move_amount = 10;
             switch (code) {
                 case 'ArrowUp':
                     this.character_position.y -= move_amount;

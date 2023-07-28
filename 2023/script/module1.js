@@ -14,7 +14,7 @@ app = Vue.createApp({
         character_position_style() {
             return { 'left': this.character_position.x + 'px', 'top': this.character_position.y + 'px' }
         },
-    }
+    },
 });
 
 app.mount('#app');
