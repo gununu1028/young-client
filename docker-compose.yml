@@ -1,0 +1,26 @@
+# ローカルサーバ（Vagrantで配布されているものを再現）
+version: '3.8'
+services:
+  sftp-server:
+    image: atmoz/sftp
+    container_name: sftp_server
+    ports:
+      - "22:22"
+    volumes:
+      - ./path/to/sftp_data:/home/vagrant
+    environment:
+      - SFTP_USERS=vagrant:vagrant:1001
+    restart: always
+
+  web-server:
+    image: nginx
+    container_name: web_server
+    ports:
+      - "8080:80"
+      - "8081:80"
+      - "8082:80"
+    volumes:
+      - ./path/to/html:/var/www/html
+      - ./path/to/m1:/var/www/html/m1
+      - ./path/to/m2:/var/www/html/m2
+    restart: always
