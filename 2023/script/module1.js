@@ -63,6 +63,7 @@ app = Vue.createApp({
                         this.set_first_state();
                     }
                     break;
+                // ここから追記    
                 case 'staff_c':
                     if (this.c_dialog_body.includes('（Spaceキーでフィールドに戻る）')) {
                         this.set_first_state();
@@ -75,6 +76,7 @@ app = Vue.createApp({
                 case 'staff_e':
                     this.set_first_state();
                     break;
+                    // ここまで追記
             }
         },
         set_first_state() {
@@ -138,6 +140,7 @@ app = Vue.createApp({
                 return target_dialog.body + '（Spaceキーでフィールドに戻る）'
             }
         },
+        // ここから追記
         async answer_survey(star) {
             post_data = {
                 star: star
@@ -160,6 +163,7 @@ app = Vue.createApp({
                 console.log('エラー発生');
             }
         },
+        // ここまで追記
     },
     async mounted() {
         window.addEventListener('keydown', this.push_key);
