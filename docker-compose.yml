@@ -12,15 +12,20 @@ services:
       - SFTP_USERS=vagrant:vagrant:1001
     restart: always
 
-  web-server:
+  web-server-m1:
     image: nginx
-    container_name: web_server
+    container_name: web_server_m1
     ports:
-      - "8080:80"
       - "8081:80"
+    volumes:
+      - ./path/to/sftp_data/m1/public:/usr/share/nginx/html
+    restart: always
+
+  web-server-m2:
+    image: nginx
+    container_name: web_server_m2
+    ports:
       - "8082:80"
     volumes:
-      - ./path/to/html:/var/www/html
-      - ./path/to/m1:/var/www/html/m1
-      - ./path/to/m2:/var/www/html/m2
+      - ./path/to/sftp_data/m2/public:/usr/share/nginx/html
     restart: always
