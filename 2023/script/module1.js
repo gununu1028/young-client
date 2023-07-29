@@ -55,7 +55,6 @@ app = Vue.createApp({
                         this.set_first_state();
                     }
                     break;
-                // ここから追記    
                 case 'staff_b':
                     dialogs_length = this.target_dialogs_length('B');
                     if (this.order < dialogs_length) {
@@ -64,7 +63,18 @@ app = Vue.createApp({
                         this.set_first_state();
                     }
                     break;
-                    // ここまで追記
+                case 'staff_c':
+                    if (this.c_dialog_body.includes('（Spaceキーでフィールドに戻る）')) {
+                        this.set_first_state();
+                    }
+                case 'staff_d':
+                    if (this.d_dialog_body.includes('（Spaceキーでフィールドに戻る）')) {
+                        this.set_first_state();
+                    }
+                    break;
+                case 'staff_e':
+                    this.set_first_state();
+                    break;
             }
         },
         set_first_state() {
@@ -120,7 +130,6 @@ app = Vue.createApp({
                 return target_dialog.body + '（Spaceキーでフィールドに戻る）'
             }
         },
-        // ここから追記
         b_dialog_body() {
             target_dialog = this.dialogs_json.find(item => item.staff == 'B' && item.order == this.order);
             if (this.order < this.target_dialogs_length('B')) {
@@ -129,7 +138,28 @@ app = Vue.createApp({
                 return target_dialog.body + '（Spaceキーでフィールドに戻る）'
             }
         },
-        // ここまで追記
+        async answer_survey(star) {
+            post_data = {
+                star: star
+            };
+            url = 'https://japanskills2023.m5a.jp/api/survey';
+            response = await fetch(url,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(post_data)
+                }
+            );
+            if (response.status == 200) {
+                survey = await response.json();
+                localStorage.setItem('survey_id', survey.id);
+                this.c_dialog_body = 'アンケートを投稿しました。（Spaceキーでフィールドに戻る）'
+            } else {
+                console.log('エラー発生');
+            }
+        },
     },
     async mounted() {
         window.addEventListener('keydown', this.push_key);
