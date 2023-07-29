@@ -11,6 +11,9 @@ app = Vue.createApp({
         };
     },
     methods: {
+        character_position_style() {
+            return { 'left': this.character_position.x + 'px', 'top': this.character_position.y + 'px' }
+        },
         push_key(event) {
             if (this.starting_conversation()) {
                 if (event.code == 'Space') {
@@ -20,6 +23,27 @@ app = Vue.createApp({
                 this.update_character_position(event.code);
                 this.check_collisions();
             }
+        },
+        update_character_position(code) {
+            move_amount = 10;
+            switch (code) {
+                case 'ArrowUp':
+                    this.character_position.y -= move_amount;
+                    break;
+                case 'ArrowRight':
+                    this.character_position.x += move_amount;
+                    break;
+                case 'ArrowDown':
+                    this.character_position.y += move_amount;
+                    break;
+                case 'ArrowLeft':
+                    this.character_position.x -= move_amount;
+                    break;
+            }
+            this.character_position.x = Math.max(0, Math.min(this.character_position.x, 1024 - 200));
+            this.character_position.y = Math.max(0, Math.min(this.character_position.y, 768 - 50));
+            localStorage.setItem('character_position_x', this.character_position.x);
+            localStorage.setItem('character_position_y', this.character_position.y);
         },
         update_dialog() {
             switch (this.display_mode) {
@@ -59,27 +83,6 @@ app = Vue.createApp({
             localStorage.setItem('character_position_x', this.character_position.x);
             localStorage.setItem('character_position_y', this.character_position.y);
         },
-        update_character_position(code) {
-            move_amount = 10;
-            switch (code) {
-                case 'ArrowUp':
-                    this.character_position.y -= move_amount;
-                    break;
-                case 'ArrowRight':
-                    this.character_position.x += move_amount;
-                    break;
-                case 'ArrowDown':
-                    this.character_position.y += move_amount;
-                    break;
-                case 'ArrowLeft':
-                    this.character_position.x -= move_amount;
-                    break;
-            }
-            this.character_position.x = Math.max(0, Math.min(this.character_position.x, 1024 - 200));
-            this.character_position.y = Math.max(0, Math.min(this.character_position.y, 768 - 50));
-            localStorage.setItem('character_position_x', this.character_position.x);
-            localStorage.setItem('character_position_y', this.character_position.y);
-        },
         check_collisions() {
             staffs = ['staff_a', 'staff_b', 'staff_c', 'staff_d', 'staff_e'];
             for (staff_id of staffs) {
@@ -97,6 +100,9 @@ app = Vue.createApp({
                 }
             }
         },
+        starting_conversation() {
+            return this.display_mode != 'first';
+        },
         start_conversation() {
             this.order = 1;
 
@@ -111,11 +117,9 @@ app = Vue.createApp({
                 this.destroy_survey();
             }
         },
-        character_position_style() {
-            return { 'left': this.character_position.x + 'px', 'top': this.character_position.y + 'px' }
-        },
-        starting_conversation() {
-            return this.display_mode != 'first';
+        target_dialogs_length(staff) {
+            target_dialogs = this.dialogs_json.filter(item => item.staff == staff)
+            return target_dialogs.length;
         },
         a_dialog_body() {
             target_dialog = this.dialogs_json.find(item => item.staff == 'A' && item.order == this.order);
@@ -133,10 +137,6 @@ app = Vue.createApp({
             } else {
                 return target_dialog.body + '（Spaceキーでフィールドに戻る）'
             }
-        },
-        target_dialogs_length(staff) {
-            target_dialogs = this.dialogs_json.filter(item => item.staff == staff)
-            return target_dialogs.length;
         },
         async answer_survey(star) {
             post_data = {
