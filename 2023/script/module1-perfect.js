@@ -56,6 +56,8 @@ app = Vue.createApp({
         set_first_state() {
             this.display_mode = 'first';
             this.character_position = { x: 400, y: 350 };
+            localStorage.setItem('character_position_x', this.character_position.x);
+            localStorage.setItem('character_position_y', this.character_position.y);
         },
         update_character_position(code) {
             move_amount = 10;
@@ -75,6 +77,8 @@ app = Vue.createApp({
             }
             this.character_position.x = Math.max(0, Math.min(this.character_position.x, 1024 - 200));
             this.character_position.y = Math.max(0, Math.min(this.character_position.y, 768 - 50));
+            localStorage.setItem('character_position_x', this.character_position.x);
+            localStorage.setItem('character_position_y', this.character_position.y);
         },
         check_collisions() {
             staffs = ['staff_a', 'staff_b', 'staff_c', 'staff_d', 'staff_e'];
@@ -205,6 +209,14 @@ app = Vue.createApp({
         url = 'https://japanskills2023.m5a.jp/api/dialogs';
         response = await fetch(url);
         this.dialogs_json = await response.json();
+        x = localStorage.getItem('character_position_x');
+        if (x) {
+            this.character_position.x = parseInt(x);
+        }
+        y = localStorage.getItem('character_position_y');
+        if (y) {
+            this.character_position.y = parseInt(y);
+        }
     }
 });
 
