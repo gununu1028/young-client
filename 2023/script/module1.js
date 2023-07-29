@@ -15,7 +15,6 @@ app = Vue.createApp({
             return { 'left': this.character_position.x + 'px', 'top': this.character_position.y + 'px' }
         },
         push_key(event) {
-            // push_keyメソッドの中身を以下のように変更
             if (this.starting_conversation()) {
                 if (event.code == 'Space') {
                     this.update_dialog();
@@ -46,7 +45,6 @@ app = Vue.createApp({
             localStorage.setItem('character_position_x', this.character_position.x);
             localStorage.setItem('character_position_y', this.character_position.y);
         },
-        // ここから追記（かなり長いので注意）
         update_dialog() {
             switch (this.display_mode) {
                 case 'staff_a':
@@ -57,6 +55,16 @@ app = Vue.createApp({
                         this.set_first_state();
                     }
                     break;
+                // ここから追記    
+                case 'staff_b':
+                    dialogs_length = this.target_dialogs_length('B');
+                    if (this.order < dialogs_length) {
+                        this.order++;
+                    } else {
+                        this.set_first_state();
+                    }
+                    break;
+                    // ここまで追記
             }
         },
         set_first_state() {
@@ -107,6 +115,15 @@ app = Vue.createApp({
             target_dialog = this.dialogs_json.find(item => item.staff == 'A' && item.order == this.order);
             a = this.dialogs_json.filter(item => item.staff == 'A');
             if (this.order < a.length) {
+                return target_dialog.body + '（Spaceキーで次へ）';
+            } else {
+                return target_dialog.body + '（Spaceキーでフィールドに戻る）'
+            }
+        },
+        // ここから追記
+        b_dialog_body() {
+            target_dialog = this.dialogs_json.find(item => item.staff == 'B' && item.order == this.order);
+            if (this.order < this.target_dialogs_length('B')) {
                 return target_dialog.body + '（Spaceキーで次へ）';
             } else {
                 return target_dialog.body + '（Spaceキーでフィールドに戻る）'
