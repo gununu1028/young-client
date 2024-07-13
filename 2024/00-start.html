@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>APIからデータを取得</title>
+</head>
+
+<body>
+    <h1>APIからデータを取得</h1>
+    <div id="app">
+        <ul>
+            <!-- v-forは繰り返し、dialogsの中身を一つずつ取り出す -->
+            <li v-for="dialog in dialogs">
+                <!-- 波括弧 {{ }} は、はじまりとおわりは2個ずつ -->
+                id: {{ dialog.id }}<br>
+                staff: {{ dialog.staff }}<br>
+                order: {{ dialog.order }}<br>
+                body: {{ dialog.body }}<br>
+            </li>
+        </ul>
+    </div>
+    <script src="script/vue.global.js"></script>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    dialogs: null
+                };
+            },
+            async mounted() {
+                // セリフ一覧APIのURL
+                url = 'https://api2024.m5a.jp/api/dialogs';
+                // APIに接続
+                response = await fetch(url);
+                // レスポンス（返ってきたデータ）を表示用変数dialogsに格納
+                this.dialogs = await response.json();
+            }
+        });
+        app.mount('#app');
+    </script>
+</body>

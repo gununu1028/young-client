@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>スタッフAによるフィールド説明</title>
+</head>
+
+<body>
+    <h1>スタッフAによるフィールド説明</h1>
+    <div id="app">
+        <button type="button" @click="start_talk_a()">スタッフAと会話する</button>
+        <div v-if="started_talk_a">
+            {{ a_dialog_body(a_dialog_order) }}
+        </div>
+    </div>
+    <script src="script/vue.global.js"></script>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    dialogs: null,
+                    started_talk_a: false,
+                    a_dialog_order: 0,
+                };
+            },
+            async mounted() {
+                url = 'https://api2024.m5a.jp/api/dialogs';
+                response = await fetch(url);
+                this.dialogs = await response.json();
+                console.log(this.dialogs);
+                window.addEventListener('keydown', this.push_space_key);
+            },
+            methods: {
+                start_talk_a() {
+                    this.started_talk_a = true;
+                },
+                push_space_key(event) {
+                    if (event.code == 'Space') {
+                        if (this.started_talk_a) {
+                            this.a_dialog_order++;
+                        }
+                    }
+                },
+                a_dialog_body(order) {
+                    a = this.dialogs.filter(item => item.staff == "A");
+                    a.sort((a, b) => a.order - b.order);
+                    if (order < a.length - 1) {
+                        return a[order].body + '（Spaceキーで次へ）';
+                    } else {
+                        return a[a.length - 1].body;
+                    }
+                }
+            },
+        });
+        app.mount('#app');
+    </script>
+</body>

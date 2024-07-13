@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>バーチャル博物館</title>
+</head>
+
+<body>
+    <h1>バーチャル博物館</h1>
+    <div id="app">
+        <div v-if="display_mode == 'field'">
+            <button type="button" @click="start_talk_a()">スタッフAと会話する</button><br>
+            <button type="button" @click="start_talk_c()">スタッフCと会話する</button><br>
+            <button type="button" @click="start_talk_d()">スタッフDと会話する</button><br>
+            <button type="button" @click="start_talk_e()">スタッフEと会話する</button>
+        </div>
+        <div v-else-if="display_mode == 'talk_a'">
+            {{ a_dialog_body(a_dialog_order) }}
+        </div>
+        <div v-else-if="display_mode == 'talk_c'">
+            {{ c_dialog_body(c_dialog_order) }}
+            <div v-if="answering_question">
+                <button type="button" @click="answer_question(5)">5</button><br>
+                <button type="button" @click="answer_question(4)">4</button><br>
+                <button type="button" @click="answer_question(3)">3</button><br>
+                <button type="button" @click="answer_question(2)">2</button><br>
+                <button type="button" @click="answer_question(1)">1</button><br>
+            </div>
+        </div>
+        <div v-else-if="display_mode == 'talk_d'">
+            {{ d_dialog_body(d_dialog_order) }}
+            <div v-if="answering_question">
+                <button type="button" @click="edit_survey(5)">5</button><br>
+                <button type="button" @click="edit_survey(4)">4</button><br>
+                <button type="button" @click="edit_survey(3)">3</button><br>
+                <button type="button" @click="edit_survey(2)">2</button><br>
+                <button type="button" @click="edit_survey(1)">1</button><br>
+            </div>
+        </div>
+        <div v-else-if="display_mode == 'talk_e'">
+            {{ e_dialog_body(e_dialog_order) }}
+        </div>
+    </div>
+    <script src="script/vue.global.js"></script>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    dialogs: null,
+                    display_mode: 'field',
+                    a_dialog_order: 0,
+                    c_dialog_order: 0,
+                    d_dialog_order: 0,
+                    e_dialog_order: 0,
+                    answering_question: false,
+                };
+            },
+            async mounted() {
+                url = 'https://api2024.m5a.jp/api/dialogs';
+                response = await fetch(url);
+                this.dialogs = await response.json();
+                window.addEventListener('keydown', this.push_space_key);
+            },
+            methods: {
+                start_talk_a() {
+                    this.display_mode = 'talk_a';
+                },
+                start_talk_d() {
+                    this.display_mode = 'talk_d';
+                    this.answering_question = true;
+                },
+                start_talk_c() {
+                    this.display_mode = 'talk_c';
+                    this.answering_question = true;
+                },
+                a_dialog_body(order) {
+                    a = this.dialogs.filter(item => item.staff == "A");
+                    a.sort((a, b) => a.order - b.order);
+                    if (order < a.length - 1) {
+                        return a[order].body + '（Spaceキーで次へ）';
+                    } else {
+                        return a[a.length - 1].body;
+                    }
+                },
+                start_talk_e() {
+                    this.display_mode = 'talk_e';
+                },
+                c_dialog_body(order) {
+                    c = this.dialogs.filter(item => item.staff == "C");
+                    c.sort((a, b) => a.order - b.order);
+                    return c[order].body;
+                },
+                d_dialog_body(order) {
+                    d = this.dialogs.filter(item => item.staff == "D");
+                    d.sort((a, b) => a.order - b.order);
+                    return d[order].body;
+                },
+                e_dialog_body(order) {
+                    e = this.dialogs.filter(item => item.staff == "E");
+                    e.sort((a, b) => a.order - b.order);
+                    if (order < e.length - 1) {
+                        return e[order].body + '（Spaceキーで次へ）';
+                    } else {
+                        return e[e.length - 1].body;
+                    }
+                },
+                push_space_key(event) {
+                    if (event.code == 'Space') {
+                        if (this.display_mode == 'talk_a') {
+                            this.a_dialog_order++;
+                        } else if (this.display_mode == 'talk_e') {
+                            this.e_dialog_order++;
+                            this.destroy_survey();
+                        }
+                    }
+                },
+                async answer_question(star) {
+                    post_data = {
+                        star: star
+                    };
+                    url = 'https://api2024.m5a.jp/api/survey';
+                    response = await fetch(url,
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(post_data)
+                        }
+                    );
+                    if (response.status == 200) {
+                        this.c_dialog_order++;
+                        this.answering_question = false;
+                        survey = await response.json();
+                        localStorage.setItem('survey_id', survey.id);
+                    } else {
+                        console.log('エラー発生');
+                    }
+                },
+                async edit_survey(star) {
+                    survey_id = localStorage.getItem('survey_id');
+                    if (survey_id == null) {
+                        console.log('エラー発生');
+                        return;
+                    }
+                    put_data = {
+                        star: star
+                    };
+                    url = 'https://api2024.m5a.jp/api/survey/' + survey_id;
+                    response = await fetch(url,
+                        {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(put_data)
+                        }
+                    );
+                    if (response.status == 200) {
+                        this.d_dialog_order++;
+                        this.answering_question = false;
+                    } else {
+                        console.log('エラー発生');
+                    }
+                },
+                async destroy_survey() {
+                    survey_id = localStorage.getItem('survey_id');
+                    if (survey_id == null) {
+                        console.log('エラー発生');
+                        return;
+                    }
+                    url = 'https://api2024.m5a.jp/api/survey/' + survey_id;
+                    response = await fetch(url,
+                        {
+                            method: 'DELETE'
+                        }
+                    );
+                    if (response.status == 200) {
+                        this.e_dialog_order++;
+                        localStorage.removeItem('survey_id');
+                    } else {
+                        console.log('エラー発生');
+                    }
+                }
+            },
+        });
+        app.mount('#app');
+    </script>
+</body>

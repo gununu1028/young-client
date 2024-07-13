@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>スタッフCによるアンケート</title>
+</head>
+
+<body>
+    <h1>スタッフCによるアンケート</h1>
+    <div id="app">
+        <button type="button" @click="start_talk_c()">スタッフCと会話する</button>
+        <div v-if="started_talk_c">
+            {{ c_dialog_body(c_dialog_order) }}
+        </div>
+        <div v-if="answering_question">
+            <button type="button" @click="answer_question(5)">5</button><br>
+            <button type="button" @click="answer_question(4)">4</button><br>
+            <button type="button" @click="answer_question(3)">3</button><br>
+            <button type="button" @click="answer_question(2)">2</button><br>
+            <button type="button" @click="answer_question(1)">1</button><br>
+        </div>
+    </div>
+    <script src="script/vue.global.js"></script>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    dialogs: null,
+                    started_talk_c: false,
+                    c_dialog_order: 0,
+                    answering_question: false
+                };
+            },
+            async mounted() {
+                url = 'https://api2024.m5a.jp/api/dialogs';
+                response = await fetch(url);
+                this.dialogs = await response.json();
+            },
+            methods: {
+                start_talk_c() {
+                    this.started_talk_c = true;
+                    this.answering_question = true;
+                },
+                c_dialog_body(order) {
+                    c = this.dialogs.filter(item => item.staff == "C");
+                    c.sort((a, b) => a.order - b.order);
+                    return c[order].body;
+                },
+                async answer_question(star) {
+                    post_data = {
+                        star: star
+                    };
+                    url = 'https://api2024.m5a.jp/api/survey';
+                    response = await fetch(url,
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(post_data)
+                        }
+                    );
+                    if (response.status == 200) {
+                        this.c_dialog_order++;
+                        this.answering_question = false;
+                    } else {
+                        console.log('エラー発生');
+                    }
+                }
+            },
+        });
+        app.mount('#app');
+    </script>
+</body>

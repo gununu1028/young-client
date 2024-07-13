@@ -1,0 +1,81 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#field {
+    position: relative;
+    width: 1024px;
+    height: 768px;
+    border: 1px solid black;
+}
+
+#character,
+#staff_a,
+#staff_b,
+#staff_c,
+#staff_d,
+#staff_e {
+    position: absolute;
+    width: 200px;
+    height: 50px;
+    border: 1px solid black;
+    text-align: center;
+    line-height: 50px;
+}
+
+#staff_a {
+    top: 250px;
+    left: 100px;
+}
+
+#staff_b {
+    top: 450px;
+    left: 100px;
+}
+
+#staff_c {
+    top: 150px;
+    left: 700px;
+}
+
+#staff_d {
+    top: 350px;
+    left: 700px;
+}
+
+#staff_e {
+    top: 550px;
+    left: 700px;
+}
+
+.staff_a_conversation,
+.staff_b_conversation,
+.staff_c_conversation,
+.staff_d_conversation,
+.staff_e_conversation {
+    width: 100%;
+    height: 100%;
+    padding: 0 50px;
+}
+
+.option {
+    width: 100%;
+    height: 400px;
+    padding-top: 50px;
+}
+
+.option button {
+    display: block;
+    width: 50%;
+    height: 50px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+.dialog {
+    width: 100%;
+    height: 250px;
+    border: 1px solid black;
+}
