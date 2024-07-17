@@ -63,7 +63,6 @@ app = Vue.createApp({
                         this.set_first_state();
                     }
                     break;
-                // ここから追記    
                 case 'staff_c':
                     if (this.c_dialog_body.includes('（Spaceキーでフィールドに戻る）')) {
                         this.set_first_state();
@@ -76,7 +75,6 @@ app = Vue.createApp({
                 case 'staff_e':
                     this.set_first_state();
                     break;
-                    // ここまで追記
             }
         },
         set_first_state() {
@@ -140,7 +138,6 @@ app = Vue.createApp({
                 return target_dialog.body + '（Spaceキーでフィールドに戻る）'
             }
         },
-        // ここから追記
         async answer_survey(star) {
             post_data = {
                 star: star
@@ -163,6 +160,50 @@ app = Vue.createApp({
                 console.log('エラー発生');
             }
         },
+        // ここから追記
+        async edit_survey(star) {
+            survey_id = localStorage.getItem('survey_id');
+            if (survey_id == null) {
+                console.log('エラー発生');
+                return;
+            }
+            put_data = {
+                star: star
+            };
+            url = 'https://japanskills2023.m5a.jp/api/survey/' + survey_id;
+            response = await fetch(url,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(put_data)
+                }
+            );
+            if (response.status == 200) {
+                this.d_dialog_body = 'アンケートを編集しました。（Spaceキーでフィールドに戻る）'
+            } else {
+                console.log('エラー発生');
+            }
+        },
+        async destroy_survey() {
+            survey_id = localStorage.getItem('survey_id');
+            if (survey_id == null) {
+                console.log('エラー発生');
+                return;
+            }
+            url = 'https://japanskills2023.m5a.jp/api/survey/' + survey_id;
+            response = await fetch(url,
+                {
+                    method: 'DELETE'
+                }
+            );
+            if (response.status == 200) {
+                localStorage.removeItem('survey_id');
+            } else {
+                console.log('エラー発生');
+            }
+        }
         // ここまで追記
     },
     async mounted() {
@@ -170,6 +211,14 @@ app = Vue.createApp({
         url = 'https://api2024.m5a.jp/api/dialogs';
         response = await fetch(url);
         this.dialogs_json = await response.json();
+        x = localStorage.getItem('character_position_x');
+        if (x) {
+            this.character_position.x = parseInt(x);
+        }
+        y = localStorage.getItem('character_position_y');
+        if (y) {
+            this.character_position.y = parseInt(y);
+        }
     }
 });
 
