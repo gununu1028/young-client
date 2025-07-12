@@ -1,0 +1,10 @@
+/* スコア一覧ページ専用のスタイル（最小限版） */
+.score-item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.score-item span {
+    margin-left: 5px;
+}

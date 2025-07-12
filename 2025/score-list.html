@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スコア一覧表示</title>
+    <link rel="stylesheet" href="style/score-list.css">
+</head>
+<body>
+    <!-- Vue.jsのアプリケーション領域 -->
+    <div id="app">
+        <h1>スコアランキング</h1>
+        
+        <h2>ランキング TOP {{ scores.length }}</h2>
+        
+        <!-- 各スコアの表示 -->
+        <div v-for="(score, index) in scores" :key="index" class="score-item">
+            <span>{{ index + 1 }}位</span>
+            <span>{{ score.nickname }}</span>
+            <span>{{ score.score }}点</span>
+        </div>
+        
+        <!-- 更新ボタン -->
+        <button @click="fetchScores">
+            スコアを更新
+        </button>
+    </div>
+
+    <!-- Vue.jsライブラリの読み込み -->
+    <script src="script/vue.global.js"></script>
+    <script src="script/score-list.js"></script>
+</body>
+</html>
