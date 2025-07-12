@@ -1,38 +1,33 @@
-// Vue.jsのアプリケーションを作成
+// Vue.jsライブラリから「createApp」という機能を取り出して使えるようにする
 const { createApp } = Vue;
 
-createApp({
-    // データ（アプリケーションの状態）
+// Vueアプリケーションの設定を書く場所
+const app = {
+    // data: HTMLで使う変数を定義する場所
     data() {
         return {
-            scores: []        // スコアのリスト
+            scores: []  // スコアのデータを入れる配列（最初は空）
         }
     },
-    
-    // コンポーネントが作成されたときに実行される
+
+    // created: ページが読み込まれた時に自動で実行される
     created() {
-        // 初回のスコア取得
-        this.fetchScores();
+        this.fetchScores();  // スコアを取得する関数を呼び出す
     },
-    
-    // メソッド（関数）
+
+    // methods: ボタンを押した時などに実行される関数を書く場所
     methods: {
-        // APIからスコアを取得する関数
+        // サーバーからスコアデータを取得する関数
         async fetchScores() {
-            // APIにリクエストを送信
-            const response = await fetch('https://jya2025.m5a.jp/api/score/list', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
-            });
-            
-            // レスポンスをJSONとして解析
+            // サーバーにデータをもらいに行く
+            const response = await fetch('https://jya2025.m5a.jp/api/score/list');
+            // もらったデータをJavaScriptで使える形に変換
             const data = await response.json();
-            
-            // スコアを高い順にソート
+            // スコアが高い順に並び替えて、scoresに保存
             this.scores = data.list.sort((a, b) => b.score - a.score);
         }
     }
-}).mount('#app'); // #appの要素にVueアプリケーションをマウント
+};
+
+// アプリケーションを作って、HTMLの「#app」の部分に表示する
+createApp(app).mount('#app');
