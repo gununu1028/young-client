@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スコア一覧表示</title>
+    <link rel="stylesheet" href="style/score-list.css">
+</head>
+
+<body>
+    <!-- Vue.jsが動作する範囲（重要：id="app"が必要） -->
+    <div id="app">
+        <h1>スコアランキング</h1>
+
+        <!-- {{ }} の中はJavaScriptの変数が表示される -->
+        <h2>ランキング TOP {{ scores.length }}</h2>
+
+        <!-- v-for: 配列の数だけ繰り返し表示する -->
+        <!-- score = 1つのスコアデータ、index = 0,1,2...の番号 -->
+        <div v-for="(score, index) in scores" :key="index" class="score-item">
+            <!-- {{ index + 1 }} = 0番目を1位、1番目を2位に変換 -->
+            <span>{{ index + 1 }}位</span>
+            <!-- score.nickname = その人のニックネーム -->
+            <span>{{ score.nickname }}</span>
+            <!-- score.score = その人のスコア -->
+            <span>{{ score.score }}点</span>
+        </div>
+
+        <!-- ここから追記 -->
+        <div>
+            <h3>スコアを投稿する</h3>
+            <!-- v-model: 入力欄とJavaScriptの変数を連動させる -->
+            <input type="text" v-model="nickname" placeholder="ニックネームを入力">
+            <input type="number" v-model="score" placeholder="スコアを入力">
+            <!-- @click: ボタンを押した時に関数を実行 -->
+            <button @click="submitScore">投稿</button>
+        </div>
+        <!-- ここまで追記 -->
+    </div>
+
+    <!-- 必要なライブラリとプログラムを読み込む（順番が重要） -->
+    <script src="script/vue.global.js"></script> <!-- Vue.jsライブラリ -->
+    <script src="script/score-list2.js"></script> <!-- 自分で書いたプログラム -->
+</body>
+
+</html>
