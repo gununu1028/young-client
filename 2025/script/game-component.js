@@ -11,7 +11,6 @@ const GameScreen = {
             // プレイヤーとスコア
             score: 0,              // 現在のスコア
             playerPosition: 1,     // プレイヤーの横位置（0,1,2）
-            isInvincible: false,   // 無敵状態か
             
             // フィールド関連
             fieldOffset: 0,        // フィールドの縦スクロール位置
@@ -162,17 +161,9 @@ const GameScreen = {
             // 衝突したセルを川に変更
             playerRow[this.playerPosition] = 0;
             
-            // 衝突したものによって処理を分ける
-            if (cellType === 1) {  // 障害物
-                if (this.isInvincible) {
-                    this.isInvincible = false;  // 無敵解除
-                } else {
-                    this.endGame();  // ゲームオーバー
-                }
-            } else if (cellType === 2) {  // スコアアイテム
-                this.score += GAME_CONSTANTS.ITEM_SCORE;
-            } else if (cellType === 3) {  // 無敵アイテム
-                this.isInvincible = true;
+            // 障害物に当たったらゲームオーバー
+            if (cellType === 1) {
+                this.endGame();
             }
         },
         
@@ -200,10 +191,8 @@ const GameScreen = {
         
         // セルの見た目を決める
         getCellClass(cellValue) {
-            if (cellValue === 0) return 'river';          // 川
-            if (cellValue === 1) return 'obstacle';       // 障害物
-            if (cellValue === 2) return 'score-item';     // スコアアイテム
-            if (cellValue === 3) return 'invincible-item'; // 無敵アイテム
+            if (cellValue === 0) return 'river';     // 川
+            if (cellValue === 1) return 'obstacle';  // 障害物
             return 'river';
         }
     }
