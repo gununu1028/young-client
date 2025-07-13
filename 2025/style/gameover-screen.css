@@ -1,0 +1,91 @@
+/* ゲームオーバー画面スタイル */
+.gameover-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+    background-color: #f0f0f0;
+}
+
+.gameover-container h1 {
+    font-size: 48px;
+    color: #d32f2f;
+    margin-bottom: 30px;
+}
+
+.score-result {
+    margin-bottom: 30px;
+}
+
+.score-result h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.final-score {
+    font-size: 36px;
+    font-weight: bold;
+    color: #1976d2;
+    margin: 0;
+}
+
+.score-actions {
+    margin-bottom: 30px;
+}
+
+.ranking-section {
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 350px;
+}
+
+.ranking-section h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.ranking-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.rank {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1976d2;
+    width: 40px;
+    text-align: center;
+}
+
+.nickname {
+    flex: 1;
+    font-size: 18px;
+    color: #333;
+    text-align: left;
+    margin-left: 15px;
+}
+
+.score {
+    font-size: 18px;
+    font-weight: bold;
+    color: #1976d2;
+}
+
+.replay-section {
+    margin-top: 20px;
+}
