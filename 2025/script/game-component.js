@@ -21,7 +21,6 @@ const GameScreen = {
             
             // ゲームループ
             gameLoop: null,        // ゲームループのタイマー
-            fieldSpeed: GAME_CONSTANTS.INITIAL_SPEED,  // ゲーム速度
             moveDistance: 0,       // 移動距離の計算用
             blocksMovedCount: 0    // 移動したブロック数
         };
@@ -103,7 +102,7 @@ const GameScreen = {
             this.isPaused = false;
             this.gameLoop = setInterval(() => {
                 this.updateGame();
-            }, this.fieldSpeed);
+            }, GAME_CONSTANTS.INITIAL_SPEED);
         },
         
         // ゲーム一時停止
@@ -144,7 +143,6 @@ const GameScreen = {
             this.moveField();
             this.checkCollisions();
             this.updateScore();
-            this.checkSpeedUp();
         },
         
         // フィールドを下に移動
@@ -207,24 +205,6 @@ const GameScreen = {
             if (this.moveDistance === 0) {
                 this.score += GAME_CONSTANTS.BLOCK_SCORE;
             }
-        },
-        
-        // スピードアップチェック
-        checkSpeedUp() {
-            // 5ブロックごとにスピードアップ
-            if (this.blocksMovedCount > 0 && this.blocksMovedCount % 5 === 0) {
-                this.speedUp();
-            }
-        },
-        
-        // スピードアップ
-        speedUp() {
-            this.fieldSpeed = Math.max(50, this.fieldSpeed - 5);
-            // ゲームループを再開
-            this.stopGame();
-            this.gameLoop = setInterval(() => {
-                this.updateGame();
-            }, this.fieldSpeed);
         },
         
         // ゲーム終了
