@@ -23,6 +23,9 @@ const GameScreen = {
     computed: {
         scoreDisplay() {
             return this.score.toString().padStart(8, '0');
+        },
+        playerTopPosition() {
+            return GAME_CONSTANTS.PLAYER_ROW * 64;
         }
     },
     
@@ -175,7 +178,7 @@ const GameScreen = {
         addNewRow() {
             this.displayField.shift();
             
-            const nextRowIndex = 12 + this.blocksMovedCount;
+            const nextRowIndex = 19 + this.blocksMovedCount;
             const nextRow = this.createNextRow(nextRowIndex);
             
             this.displayField.push(nextRow);

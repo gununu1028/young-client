@@ -3,7 +3,7 @@ const GAME_CONSTANTS = {
     FIELD_WIDTH: 3,
     FIELD_HEIGHT: 12,
     BLOCK_SIZE: 64,
-    PLAYER_ROW: 10,
+    PLAYER_ROW: 1,
     INITIAL_SPEED: 100,
     MIN_SPEED: 50,
     SPEED_INCREASE_BLOCKS: 5,
@@ -20,6 +20,7 @@ const GAME_CONSTANTS = {
 
 // サンプルフィールドデータ
 const SAMPLE_FIELD_DATA = [
+    [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0],
     [0, 0, 0], [0, 1, 0], [0, 0, 0], [1, 0, 1], [0, 2, 0],
     [0, 0, 0], [1, 0, 0], [0, 3, 0], [0, 0, 1], [2, 0, 0],
     [0, 0, 0], [1, 1, 0], [0, 0, 0], [0, 0, 2], [0, 1, 0],

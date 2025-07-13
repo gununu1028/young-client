@@ -89,7 +89,7 @@ body {
     height: 64px;
     background-color: #FF6347;
     border-radius: 50%;
-    top: 640px; /* 上から2ブロック目 (10 × 64px) */
+    /* topはVueのバインディングで動的に設定される */
     left: 64px; /* 中央配置 */
     transition: left 0.1s ease;
     z-index: 10;
