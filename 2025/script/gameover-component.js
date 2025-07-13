@@ -1,4 +1,4 @@
-// ゲームオーバー画面コンポーネント
+// ゲームオーバー画面
 const GameOverScreen = {
     template: '#gameover-template',
     

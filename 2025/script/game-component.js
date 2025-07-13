@@ -1,4 +1,4 @@
-// ゲーム画面コンポーネント
+// ゲーム画面
 const GameScreen = {
     template: '#game-template',
 
