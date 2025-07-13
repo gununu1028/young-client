@@ -51,7 +51,7 @@ const GameScreen = {
         // ゲーム初期化
         async initGame() {
             // APIからフィールドデータを取得
-            const response = await fetch('https://jakunen.skilljapan.info/2025/api/field');
+            const response = await fetch('https://jya2025.m5a.jp/api/field');
             const data = await response.json();
             this.fieldData = data.field_data;
             
