@@ -6,7 +6,6 @@ const GameScreen = {
         return {
             // ゲームの状態
             gameStarted: false,    // ゲームが開始されているか
-            isPaused: false,       // ゲームが一時停止中か
             gameOver: false,       // ゲームオーバーか
             
             // プレイヤーとスコア
@@ -76,8 +75,8 @@ const GameScreen = {
         handleKeyDown(event) {
             if (this.gameOver) return;
             
-            if (event.code === 'Space') {
-                this.toggleGame();
+            if (event.code === 'Space' && !this.gameStarted) {
+                this.startGame();
             } else if (event.code === 'ArrowLeft') {
                 this.movePlayer(-1);
             } else if (event.code === 'ArrowRight') {
@@ -87,35 +86,12 @@ const GameScreen = {
             event.preventDefault();
         },
         
-        // ゲーム開始/一時停止の切り替え
-        toggleGame() {
-            if (!this.gameStarted) {
-                this.startGame();
-            } else {
-                this.pauseGame();
-            }
-        },
-        
         // ゲーム開始
         startGame() {
             this.gameStarted = true;
-            this.isPaused = false;
             this.gameLoop = setInterval(() => {
                 this.updateGame();
             }, GAME_CONSTANTS.INITIAL_SPEED);
-        },
-        
-        // ゲーム一時停止
-        pauseGame() {
-            this.isPaused = !this.isPaused;
-            
-            if (this.isPaused) {
-                clearInterval(this.gameLoop);
-            } else {
-                this.gameLoop = setInterval(() => {
-                    this.updateGame();
-                }, this.fieldSpeed);
-            }
         },
         
         // ゲーム停止
@@ -128,7 +104,7 @@ const GameScreen = {
         
         // プレイヤー移動
         movePlayer(direction) {
-            if (!this.gameStarted || this.isPaused) return;
+            if (!this.gameStarted) return;
             
             const newPosition = this.playerPosition + direction;
             
