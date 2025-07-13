@@ -42,7 +42,7 @@ const GameScreen = {
     },
 
     beforeUnmount() {
-        // コンポーネントが破棄される前のクリーンアップ処理
+        // 画面を離れる時の後始末（ゲーム停止とキーボードイベント削除）
         this.stopGame();
         document.removeEventListener('keydown', this.handleKeyDown);
     },
