@@ -4,108 +4,106 @@ const GameScreen = {
     
     data() {
         return {
-            gameStarted: false,
-            isPaused: false,
-            gameOver: false,
-            score: 0,
-            playerPosition: 1,
-            fieldOffset: 0,
-            fieldData: [],
-            displayField: [],
-            isInvincible: false,
-            gameLoop: null,
-            fieldSpeed: GAME_CONSTANTS.INITIAL_SPEED,
-            moveDistance: 0,
-            blocksMovedCount: 0
+            // ゲームの状態
+            gameStarted: false,    // ゲームが開始されているか
+            isPaused: false,       // ゲームが一時停止中か
+            gameOver: false,       // ゲームオーバーか
+            
+            // プレイヤーとスコア
+            score: 0,              // 現在のスコア
+            playerPosition: 1,     // プレイヤーの横位置（0,1,2）
+            isInvincible: false,   // 無敵状態か
+            
+            // フィールド関連
+            fieldOffset: 0,        // フィールドの縦スクロール位置
+            fieldData: [],         // ゲームフィールドのデータ
+            displayField: [],      // 画面に表示するフィールド
+            
+            // ゲームループ
+            gameLoop: null,        // ゲームループのタイマー
+            fieldSpeed: GAME_CONSTANTS.INITIAL_SPEED,  // ゲーム速度
+            moveDistance: 0,       // 移動距離の計算用
+            blocksMovedCount: 0    // 移動したブロック数
         };
     },
     
     computed: {
+        // スコアを8桁で表示
         scoreDisplay() {
             return this.score.toString().padStart(8, '0');
         },
+        // プレイヤーの縦位置を計算
         playerTopPosition() {
             return GAME_CONSTANTS.PLAYER_ROW * 64;
         }
     },
     
     mounted() {
-        this.initializeGame();
-        this.setupEventListeners();
+        this.initGame();
+        this.setupKeys();
     },
     
     beforeUnmount() {
-        this.cleanupGame();
+        this.stopGame();
         document.removeEventListener('keydown', this.handleKeyDown);
     },
     
     methods: {
         // ゲーム初期化
-        async initializeGame() {
-            await this.loadFieldData();
-            this.generateDisplayField();
+        initGame() {
+            // サンプルデータを使用
+            this.fieldData = [...SAMPLE_FIELD_DATA];
+            this.createDisplayField();
         },
         
-        // フィールドデータ読み込み
-        async loadFieldData() {
-            try {
-                const response = await fetch('/api/field');
-                if (!response.ok) throw new Error(`API error: ${response.status}`);
-                this.fieldData = await response.json();
-            } catch (error) {
-                console.warn('Error loading field data:', error);
-                this.fieldData = [...SAMPLE_FIELD_DATA];
-            }
+        // キーボード設定
+        setupKeys() {
+            document.addEventListener('keydown', this.handleKeyDown);
         },
         
-        // 表示用フィールド生成
-        generateDisplayField() {
+        // 表示用フィールドを作成
+        createDisplayField() {
             this.displayField = [];
             for (let i = 0; i < 20; i++) {
-                const row = i < this.fieldData.length 
-                    ? [...this.fieldData[i]] 
-                    : [0, 0, 0];
-                this.displayField.push(row);
+                if (i < this.fieldData.length) {
+                    this.displayField.push([...this.fieldData[i]]);
+                } else {
+                    this.displayField.push([0, 0, 0]);  // 空の行
+                }
             }
-        },
-        
-        // キーボード入力設定
-        setupEventListeners() {
-            document.addEventListener('keydown', this.handleKeyDown);
         },
         
         // キー入力処理
         handleKeyDown(event) {
             if (this.gameOver) return;
             
-            const keyActions = {
-                'Space': () => this.toggleGame(),
-                'ArrowLeft': () => this.movePlayer(-1),
-                'ArrowRight': () => this.movePlayer(1)
-            };
-            
-            const action = keyActions[event.code];
-            if (!action) return;
+            if (event.code === 'Space') {
+                this.toggleGame();
+            } else if (event.code === 'ArrowLeft') {
+                this.movePlayer(-1);
+            } else if (event.code === 'ArrowRight') {
+                this.movePlayer(1);
+            }
             
             event.preventDefault();
-            action();
         },
         
-        // ゲーム開始/停止切り替え
+        // ゲーム開始/一時停止の切り替え
         toggleGame() {
             if (!this.gameStarted) {
                 this.startGame();
-                return;
+            } else {
+                this.pauseGame();
             }
-            
-            this.pauseGame();
         },
         
         // ゲーム開始
         startGame() {
             this.gameStarted = true;
             this.isPaused = false;
-            this.startGameLoop();
+            this.gameLoop = setInterval(() => {
+                this.updateGame();
+            }, this.fieldSpeed);
         },
         
         // ゲーム一時停止
@@ -113,26 +111,20 @@ const GameScreen = {
             this.isPaused = !this.isPaused;
             
             if (this.isPaused) {
-                this.stopGameLoop();
-                return;
+                clearInterval(this.gameLoop);
+            } else {
+                this.gameLoop = setInterval(() => {
+                    this.updateGame();
+                }, this.fieldSpeed);
             }
-            
-            this.startGameLoop();
         },
         
-        // ゲームループ開始
-        startGameLoop() {
-            this.gameLoop = setInterval(() => {
-                this.updateGame();
-            }, this.fieldSpeed);
-        },
-        
-        // ゲームループ停止
-        stopGameLoop() {
-            if (!this.gameLoop) return;
-            
-            clearInterval(this.gameLoop);
-            this.gameLoop = null;
+        // ゲーム停止
+        stopGame() {
+            if (this.gameLoop) {
+                clearInterval(this.gameLoop);
+                this.gameLoop = null;
+            }
         },
         
         // プレイヤー移動
@@ -140,55 +132,47 @@ const GameScreen = {
             if (!this.gameStarted || this.isPaused) return;
             
             const newPosition = this.playerPosition + direction;
-            const isValidPosition = newPosition >= 0 && newPosition < GAME_CONSTANTS.FIELD_WIDTH;
             
-            if (isValidPosition) {
+            // 画面の端を超えないようにチェック
+            if (newPosition >= 0 && newPosition < 3) {
                 this.playerPosition = newPosition;
             }
         },
         
-        // ゲーム更新（メインループ）
+        // ゲーム更新（毎フレーム実行）
         updateGame() {
             this.moveField();
             this.checkCollisions();
             this.updateScore();
-            this.checkSpeedIncrease();
+            this.checkSpeedUp();
         },
         
-        // フィールド移動
+        // フィールドを下に移動
         moveField() {
             this.fieldOffset += GAME_CONSTANTS.MOVE_STEP;
             this.moveDistance += GAME_CONSTANTS.MOVE_STEP;
             
-            if (this.moveDistance < GAME_CONSTANTS.BLOCK_SIZE) return;
-            
-            this.processBlockMovement();
+            // 1ブロック分移動したら新しい行を追加
+            if (this.moveDistance >= GAME_CONSTANTS.BLOCK_SIZE) {
+                this.addNewRow();
+                this.moveDistance = 0;
+                this.fieldOffset = 0;
+                this.blocksMovedCount++;
+            }
         },
         
-        // ブロック移動処理
-        processBlockMovement() {
-            this.moveDistance = 0;
-            this.fieldOffset = 0;
-            this.blocksMovedCount++;
-            
-            this.addNewRow();
-        },
-        
-        // 新しい行を追加
+        // 新しい行をフィールドに追加
         addNewRow() {
+            // 一番上の行を削除
             this.displayField.shift();
             
+            // 新しい行を下に追加
             const nextRowIndex = 19 + this.blocksMovedCount;
-            const nextRow = this.createNextRow(nextRowIndex);
-            
-            this.displayField.push(nextRow);
-        },
-        
-        // 次の行を作成
-        createNextRow(rowIndex) {
-            return rowIndex < this.fieldData.length 
-                ? [...this.fieldData[rowIndex]] 
-                : [0, 0, 0];
+            if (nextRowIndex < this.fieldData.length) {
+                this.displayField.push([...this.fieldData[nextRowIndex]]);
+            } else {
+                this.displayField.push([0, 0, 0]);  // 空の行
+            }
         },
         
         // 衝突判定
@@ -196,45 +180,26 @@ const GameScreen = {
             const playerRow = this.displayField[GAME_CONSTANTS.PLAYER_ROW];
             if (!playerRow) return;
             
-            const currentCell = playerRow[this.playerPosition];
-            if (currentCell === GAME_CONSTANTS.CELL_TYPES.RIVER) return;
+            const cellType = playerRow[this.playerPosition];
             
-            this.handleCollision(currentCell);
-            playerRow[this.playerPosition] = GAME_CONSTANTS.CELL_TYPES.RIVER;
-        },
-        
-        // 衝突処理
-        handleCollision(cellType) {
-            const collisionHandlers = {
-                [GAME_CONSTANTS.CELL_TYPES.OBSTACLE]: () => this.handleObstacle(),
-                [GAME_CONSTANTS.CELL_TYPES.SCORE_ITEM]: () => this.handleScoreItem(),
-                [GAME_CONSTANTS.CELL_TYPES.INVINCIBLE_ITEM]: () => this.handleInvincibleItem()
-            };
+            // 川（何もない）なら何もしない
+            if (cellType === 0) return;
             
-            const handler = collisionHandlers[cellType];
-            if (handler) {
-                handler();
+            // 衝突したセルを川に変更
+            playerRow[this.playerPosition] = 0;
+            
+            // 衝突したものによって処理を分ける
+            if (cellType === 1) {  // 障害物
+                if (this.isInvincible) {
+                    this.isInvincible = false;  // 無敵解除
+                } else {
+                    this.endGame();  // ゲームオーバー
+                }
+            } else if (cellType === 2) {  // スコアアイテム
+                this.score += GAME_CONSTANTS.ITEM_SCORE;
+            } else if (cellType === 3) {  // 無敵アイテム
+                this.isInvincible = true;
             }
-        },
-        
-        // 障害物との衝突処理
-        handleObstacle() {
-            if (this.isInvincible) {
-                this.isInvincible = false;
-                return;
-            }
-            
-            this.endGame();
-        },
-        
-        // スコアアイテム処理
-        handleScoreItem() {
-            this.score += GAME_CONSTANTS.ITEM_SCORE;
-        },
-        
-        // 無敵アイテム処理
-        handleInvincibleItem() {
-            this.isInvincible = true;
         },
         
         // スコア更新
@@ -244,58 +209,46 @@ const GameScreen = {
             }
         },
         
-        // スピード上昇チェック
-        checkSpeedIncrease() {
-            const shouldIncrease = this.shouldIncreaseSpeed();
-            if (!shouldIncrease) return;
-            
-            this.increaseSpeed();
+        // スピードアップチェック
+        checkSpeedUp() {
+            // 5ブロックごとにスピードアップ
+            if (this.blocksMovedCount > 0 && this.blocksMovedCount % 5 === 0) {
+                this.speedUp();
+            }
         },
         
-        // スピード上昇判定
-        shouldIncreaseSpeed() {
-            return this.blocksMovedCount > 0 && 
-                   this.blocksMovedCount % GAME_CONSTANTS.SPEED_INCREASE_BLOCKS === 0;
-        },
-        
-        // スピード上昇処理
-        increaseSpeed() {
-            this.fieldSpeed = Math.max(GAME_CONSTANTS.MIN_SPEED, this.fieldSpeed - 5);
-            this.restartGameLoop();
-        },
-        
-        // ゲームループ再開
-        restartGameLoop() {
-            this.stopGameLoop();
-            this.startGameLoop();
+        // スピードアップ
+        speedUp() {
+            this.fieldSpeed = Math.max(50, this.fieldSpeed - 5);
+            // ゲームループを再開
+            this.stopGame();
+            this.gameLoop = setInterval(() => {
+                this.updateGame();
+            }, this.fieldSpeed);
         },
         
         // ゲーム終了
         endGame() {
             this.gameOver = true;
             this.gameStarted = false;
-            this.cleanupGame();
+            this.stopGame();
             
+            // スコアを保存
             localStorage.setItem('gameScore', this.score);
+            
+            // 1秒後にゲームオーバー画面へ
             setTimeout(() => {
                 this.$router.push('/gameover');
             }, 1000);
         },
         
-        // ゲーム終了処理
-        cleanupGame() {
-            this.stopGameLoop();
-        },
-        
-        // セルのCSSクラス取得
+        // セルの見た目を決める
         getCellClass(cellValue) {
-            const cellClasses = {
-                [GAME_CONSTANTS.CELL_TYPES.RIVER]: 'river',
-                [GAME_CONSTANTS.CELL_TYPES.OBSTACLE]: 'obstacle',
-                [GAME_CONSTANTS.CELL_TYPES.SCORE_ITEM]: 'score-item',
-                [GAME_CONSTANTS.CELL_TYPES.INVINCIBLE_ITEM]: 'invincible-item'
-            };
-            return cellClasses[cellValue] || 'river';
+            if (cellValue === 0) return 'river';          // 川
+            if (cellValue === 1) return 'obstacle';       // 障害物
+            if (cellValue === 2) return 'score-item';     // スコアアイテム
+            if (cellValue === 3) return 'invincible-item'; // 無敵アイテム
+            return 'river';
         }
     }
 };
