@@ -6,6 +6,7 @@
     <title>川下りゲーム</title>
     <link rel="stylesheet" href="style/common.css">
     <link rel="stylesheet" href="style/game-screen.css">
+    <link rel="stylesheet" href="style/gameover-screen.css"><!-- ここを追記 -->
 </head>
 <body>
     <div id="app">
@@ -38,6 +39,48 @@
             </div>
         </div>
     </template>
+
+    <!-- ここから追記 -->
+    <template id="gameover-template">
+        <div class="gameover-container">
+            <h1>GAME OVER</h1>
+            
+            <div class="score-result">
+                <h2>YOUR SCORE</h2>
+                <p class="final-score">{{ scoreDisplay }}</p>
+            </div>
+            
+            <div class="score-actions">
+                <button v-if="!scoreSubmitted" @click="submitScore" class="btn btn-primary">
+                    スコア投稿
+                </button>
+                <button v-if="scoreSubmitted" @click="updateNickname" class="btn btn-secondary">
+                    ニックネーム更新
+                </button>
+                <button v-if="scoreSubmitted" @click="deleteScore" class="btn btn-danger">
+                    スコア削除
+                </button>
+            </div>
+            
+            <div v-if="ranking.length > 0" class="ranking-section">
+                <h2>TOP 3 RANKING</h2>
+                <ol class="ranking-list">
+                    <li v-for="(entry, index) in ranking" :key="index" class="ranking-item">
+                        <span class="rank">{{ index + 1 }}</span>
+                        <span class="nickname">{{ entry.nickname }}</span>
+                        <span class="score">{{ formatScore(entry.score) }}</span>
+                    </li>
+                </ol>
+            </div>
+            
+            <div class="replay-section">
+                <button @click="replay" class="btn btn-replay">
+                    リプレイ
+                </button>
+            </div>
+        </div>
+    </template>
+    <!-- ここまで追記 -->
 
     <!-- Vue.jsライブラリ -->
     <script src="script/vue.global.js"></script>
