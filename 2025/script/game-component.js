@@ -11,6 +11,7 @@ const GameScreen = {
             // プレイヤーとスコア
             score: 0,              // 現在のスコア
             playerPosition: 1,     // プレイヤーの横位置（0,1,2）
+            isInvincible: false,   // 無敵状態かどうか
 
             // フィールド関連
             fieldOffset: 0,        // フィールドの縦スクロール位置
@@ -171,16 +172,29 @@ const GameScreen = {
             const cellType = playerRow[this.playerPosition];
 
             // 川（何もない）なら何もしない
-            if (cellType === 0) return;
+            if (cellType === GAME_CONSTANTS.CELL_TYPES.RIVER) return;
 
             // 衝突したセルを川に変更（取得済み）
-            playerRow[this.playerPosition] = 0;
+            playerRow[this.playerPosition] = GAME_CONSTANTS.CELL_TYPES.RIVER;
 
-            // 障害物に当たったらゲームオーバー
-            if (cellType === 1) {
-                this.endGame();
+            // 障害物に当たった場合
+            if (cellType === GAME_CONSTANTS.CELL_TYPES.OBSTACLE) {
+                // 無敵状態なら無敵を解除してゲーム続行
+                if (this.isInvincible) {
+                    this.isInvincible = false;
+                } else {
+                    // 無敵でなければゲームオーバー
+                    this.endGame();
+                }
             }
-            // セルタイプ2,3のアイテム処理は今後実装予定
+            // スコアアイテム（えだまめ）を取得
+            else if (cellType === GAME_CONSTANTS.CELL_TYPES.SCORE_ITEM) {
+                this.score += GAME_CONSTANTS.ITEM_SCORE;
+            }
+            // 無敵アイテム（こんにゃく）を取得
+            else if (cellType === GAME_CONSTANTS.CELL_TYPES.INVINCIBLE_ITEM) {
+                this.isInvincible = true;
+            }
         },
 
         // スコア更新
@@ -209,9 +223,18 @@ const GameScreen = {
 
         // セルの見た目を決める
         getCellClass(cellValue) {
-            if (cellValue === 0) return 'river';     // 川（何もない）
-            if (cellValue === 1) return 'obstacle';  // 障害物
-            return 'river';
+            switch (cellValue) {
+                case GAME_CONSTANTS.CELL_TYPES.RIVER:
+                    return 'river';
+                case GAME_CONSTANTS.CELL_TYPES.OBSTACLE:
+                    return 'obstacle';
+                case GAME_CONSTANTS.CELL_TYPES.SCORE_ITEM:
+                    return 'score-item';
+                case GAME_CONSTANTS.CELL_TYPES.INVINCIBLE_ITEM:
+                    return 'invincible-item';
+                default:
+                    return 'river';
+            }
         }
     }
 };
