@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>川下りゲーム</title>
     <link rel="stylesheet" href="style/common.css">
     <link rel="stylesheet" href="style/game-screen.css">
-    <link rel="stylesheet" href="style/gameover-screen.css"><!-- ここを追記 -->
+    <link rel="stylesheet" href="style/gameover-screen.css">
 </head>
+
 <body>
     <div id="app">
         <router-view></router-view>
@@ -19,37 +21,40 @@
             <div class="score-display">
                 <h2>SCORE: {{ scoreDisplay }}</h2>
             </div>
-            
+
             <div class="game-field">
                 <div class="field-content" :style="{ transform: `translateY(${fieldOffset}px)` }">
                     <div v-for="(row, rowIndex) in displayField" :key="`row-${rowIndex}`" class="field-row">
-                        <div v-for="(cell, colIndex) in row" :key="`cell-${rowIndex}-${colIndex}`" 
-                             class="field-cell"
-                             :class="getCellClass(cell)">
+                        <div v-for="(cell, colIndex) in row" :key="`cell-${rowIndex}-${colIndex}`"
+                            class="field-cell"
+                            :class="getCellClass(cell)">
                         </div>
                     </div>
                 </div>
-                
-                <div class="player" :style="{ left: `${playerPosition * 64}px`, top: `${playerTopPosition}px` }">
+
+                <!-- このdivタグを修正 -->
+                <div class="player"
+                    :class="{ invincible: isInvincible }"
+                    :style="{ left: `${playerPosition * 64}px`, top: `${playerTopPosition}px` }">
                 </div>
             </div>
-            
+
             <div class="game-controls">
                 <p v-if="!gameStarted">スペースキーでゲームを開始</p>
             </div>
         </div>
     </template>
 
-    <!-- ここから追記 -->
+    <!-- ゲームオーバー画面テンプレート -->
     <template id="gameover-template">
         <div class="gameover-container">
             <h1>GAME OVER</h1>
-            
+
             <div class="score-result">
                 <h2>YOUR SCORE</h2>
                 <p class="final-score">{{ scoreDisplay }}</p>
             </div>
-            
+
             <div class="score-actions">
                 <button v-if="!scoreSubmitted" @click="submitScore" class="btn btn-primary">
                     スコア投稿
@@ -61,7 +66,7 @@
                     スコア削除
                 </button>
             </div>
-            
+
             <div v-if="ranking.length > 0" class="ranking-section">
                 <h2>TOP 3 RANKING</h2>
                 <ol class="ranking-list">
@@ -72,7 +77,7 @@
                     </li>
                 </ol>
             </div>
-            
+
             <div class="replay-section">
                 <button @click="replay" class="btn btn-replay">
                     リプレイ
@@ -80,17 +85,17 @@
             </div>
         </div>
     </template>
-    <!-- ここまで追記 -->
 
     <!-- Vue.jsライブラリ -->
     <script src="script/vue.global.js"></script>
     <script src="script/vue-router.global.js"></script>
-    
+
     <!-- コンポーネント -->
     <script src="script/game-component.js"></script>
     <script src="script/gameover-component.js"></script>
-    
+
     <!-- アプリケーション初期化 -->
     <script src="script/app.js"></script>
 </body>
+
 </html>
