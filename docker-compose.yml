@@ -1,4 +1,11 @@
 # ローカルサーバ（Vagrantで配布されているものを再現）
+# ホスト 192.168.33.10
+# ユーザー名 vagrant
+# パスワード vagrant
+# ポート 22
+# localhost:8081 ドキュメントルート：/var/www/html/m1/public
+# localhost:8082 ドキュメントルート：/var/www/html/m2/public
+
 version: '3.8'
 services:
   sftp-server:
@@ -7,7 +14,7 @@ services:
     ports:
       - "22:22"
     volumes:
-      - ./path/to/sftp_data:/home/vagrant
+      - ./sftp_data:/home/vagrant
     environment:
       - SFTP_USERS=vagrant:vagrant:1001
     restart: always
@@ -18,7 +25,7 @@ services:
     ports:
       - "8081:80"
     volumes:
-      - ./path/to/sftp_data/m1/public:/usr/share/nginx/html
+      - ./sftp_data/var/www/html/m1/public:/usr/share/nginx/html
     restart: always
 
   web-server-m2:
@@ -27,5 +34,5 @@ services:
     ports:
       - "8082:80"
     volumes:
-      - ./path/to/sftp_data/m2/public:/usr/share/nginx/html
+      - ./sftp_data/var/www/html/m2/public:/usr/share/nginx/html
     restart: always
