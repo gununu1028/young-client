@@ -11,7 +11,7 @@ const GameScreen = {
             // プレイヤーとスコア
             score: 0,              // 現在のスコア
             playerPosition: 1,     // プレイヤーの横位置（0,1,2）
-            isInvincible: false,   // 無敵状態かどうか
+            isInvincible: false,   // *** ここを追記 *** 
 
             // フィールド関連
             fieldOffset: 0,        // フィールドの縦スクロール位置
@@ -55,7 +55,7 @@ const GameScreen = {
             const response = await fetch('https://jya2025.m5a.jp/api/field');
             const data = await response.json();
             this.fieldData = data.field_data;
-            
+
             // 表示用フィールドを初期化（最初の20行を表示）
             this.displayField = [];
             for (let i = 0; i < 20; i++) {
@@ -81,10 +81,10 @@ const GameScreen = {
             // スペースキーでゲーム開始
             if (event.code === 'Space' && !this.gameStarted) {
                 this.startGame();
-            // 左矢印キーで左に移動
+                // 左矢印キーで左に移動
             } else if (event.code === 'ArrowLeft') {
                 this.movePlayer(-1);
-            // 右矢印キーで右に移動
+                // 右矢印キーで右に移動
             } else if (event.code === 'ArrowRight') {
                 this.movePlayer(1);
             }
@@ -171,6 +171,7 @@ const GameScreen = {
             // プレイヤーの位置にあるセルの種類を取得
             const cellType = playerRow[this.playerPosition];
 
+            // *** ここから修正 ***
             // 川（何もない）なら何もしない
             if (cellType === GAME_CONSTANTS.CELL_TYPES.RIVER) return;
 
@@ -195,6 +196,7 @@ const GameScreen = {
             else if (cellType === GAME_CONSTANTS.CELL_TYPES.INVINCIBLE_ITEM) {
                 this.isInvincible = true;
             }
+            // *** ここまで修正 ***
         },
 
         // スコア更新
@@ -223,18 +225,21 @@ const GameScreen = {
 
         // セルの見た目を決める
         getCellClass(cellValue) {
+            // *** ここから修正 ***
+            // アイテム機能実装に伴い、switch文に変更してセルタイプごとのクラス名を返す
             switch (cellValue) {
                 case GAME_CONSTANTS.CELL_TYPES.RIVER:
                     return 'river';
                 case GAME_CONSTANTS.CELL_TYPES.OBSTACLE:
                     return 'obstacle';
-                case GAME_CONSTANTS.CELL_TYPES.SCORE_ITEM:
+                case GAME_CONSTANTS.CELL_TYPES.SCORE_ITEM:      // スコアアイテム（えだまめ）
                     return 'score-item';
-                case GAME_CONSTANTS.CELL_TYPES.INVINCIBLE_ITEM:
+                case GAME_CONSTANTS.CELL_TYPES.INVINCIBLE_ITEM: // 無敵アイテム（こんにゃく）
                     return 'invincible-item';
                 default:
                     return 'river';
             }
+            // *** ここまで修正 ***
         }
     }
 };
