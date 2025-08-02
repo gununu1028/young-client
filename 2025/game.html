@@ -27,7 +27,7 @@
                     <div v-for="(row, rowIndex) in displayField" :key="`row-${rowIndex}`" class="field-row">
                         <div v-for="(cell, colIndex) in row" :key="`cell-${rowIndex}-${colIndex}`"
                             class="field-cell"
-                            :class="getCellClass(cell)">
+                            v-bind:class="getCellClass(cell)">
                         </div>
                     </div>
                 </div>
