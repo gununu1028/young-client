@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>川下りゲーム</title>
+</head>
+
+<body>
+    <div id="app">
+        <router-view></router-view>
+    </div>
+
+    <template id="top-template">
+        <p>トップ画面</p>
+        <ul>
+            <li v-for="(row, rowIndex) in score_list" :key="rowIndex">
+                名前：{{ row.nickname }}<br>
+                {{ row.score }}点
+            </li>
+        </ul>
+        <div v-if="game_started">
+            ゲームがはじまりました！<br>
+            aを押したらクリア<br>
+            a以外を押したらゲームオーバー
+
+
+            <div v-for="(row, rowIndex) in block_list" :key="rowIndex" style="height: 50px;">
+                <div v-for="(cell, cellIndex) in row" :key="cellIndex"
+                    style="border: 1px solid black; width: 50px; height:50px; display:inline-block;"
+                    :style="getCellClass(cell)">
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="clear-template">
+        ゲームクリア！
+    </template>
+
+    <script src="script/vue.global.js"></script>
+    <script src="script/vue-router.global.js"></script>
+
+    <script src="script/top-component.js"></script>
+    <script src="script/clear-component.js"></script>
+    <script src="script/app.js"></script>
+</body>
+
+</html>
